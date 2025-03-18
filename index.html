@@ -1,1011 +1,143 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DoYouTrustAI</title>
-    <style>
-        /* Background and layout styling */
-        body {
-            font-family: Arial, sans-serif;
-            background: url('https://source.unsplash.com/1600x900/?abstract,dark') no-repeat center center fixed;
-            background-size: cover;
-            text-align: center;
-            margin: 0;
-            padding: 0;
-            overflow-y: auto;
-        }
-
-        /* Main container */
-        .container {
-            position: relative; /* Allows it to move with the page */
-            width: 60%;
-            background: rgba(0, 0, 0, 0.8);
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0px 0px 15px rgba(255, 255, 255, 0.2);
-            margin: 20px auto; /* Centers it with margin instead of absolute positioning */
-            color: white;
-        }
-
-        /* Ensure the body and html can scroll */
-        html, body {
-            height: 100%;
-            margin: 0;
-            padding: 0;
-            overflow-y: auto;
-        }
-
-        /* Input and button styling */
-        input, button {
-            font-size: 18px;
-            padding: 10px;
-            margin: 10px;
-            border-radius: 5px;
-            border: none;
-            outline: none;
-        }
-
-        input {
-            width: 80%;
-            text-align: center;
-        }
-
-        button {
-            background: #3498db;
-            color: white;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-
-        button:hover {
-            background: #2980b9;
-        }
-
-        /* Loading animation */
-        .loader {
-            display: none;
-            margin: 20px auto;
-            border: 6px solid #f3f3f3;
-            border-top: 6px solid #3498db;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .counter {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            font-size: 18px;
-            font-weight: bold;
-            background: rgba(255, 255, 255, 0.2);
-            padding: 5px 10px;
-            border-radius: 5px;
-        }
-
-        /* Continue Button */
-        #continue-container-2,
-        #continue-container {
-            text-align: center;
-            margin-top: 20px;
-        }
-
-        #continue-button {
-            background: #3498db;
-            color: white;
-            font-size: 18px;
-            padding: 10px 20px;
-            cursor: pointer;
-            border-radius: 5px;
-            border: none;
-            transition: 0.3s;
-        }
-
-        #continue-button:hover {
-            background: #2980b9;
-        }
-
-        #random-button, #generate-button {
-            background: #3498db;
-            color: white;
-            font-size: 18px;
-            padding: 10px 20px;
-            cursor: pointer;
-            border-radius: 5px;
-            border: none;
-            transition: 0.3s;
-        }
-
-        #random-button:hover {
-            background: #2980b9;
-        }
-
-        #generate-button:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        /* Response box */
-        .response-box {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 20px;
-            margin-top: 20px;
-            border-radius: 5px;
-            min-height: 100px;
-            display: block;
-        }
-
-        /* Source box */
-        .button-question,
-        .source-box {
-            margin-top: 10px;
-            font-size: 14px;
-            color: #ddd;
-            display: none; /* Initially hidden */
-        }
-
-        .button-question a,
-        .source-box a {
-            color: #1abc9c;
-            text-decoration: none;
-        }
-
-        .button-question a:hover
-        .source-box a:hover {
-            text-decoration: underline;
-        }
-
-        .button-question span,
-        .source-box span {
-            color: inherit;
-            text-decoration: none;
-            cursor: default;
-        }
-
-        /* True/False buttons */
-        .button-container {
-            display: none; /* Initially hidden */
-            justify-content: space-around;
-            margin-top: 20px;
-        }
-
-        .true-btn, .false-btn {
-            padding: 15px 30px;
-            font-size: 20px;
-            border-radius: 5px;
-            border: none;
-            cursor: pointer;
-            transition: 0.3s;
-            width: 45%;
-        }
-
-        .true-btn {
-            background: #2ecc71;
-        }
-
-        .true-btn:hover {
-            background: #27ae60;
-        }
-
-        .false-btn {
-            background: #e74c3c;
-        }
-
-        .false-btn:hover {
-            background: #c0392b;
-        }
-
-        .red-bold {
-            color: #e74c3c; /* Red */
-            font-weight: bold;
-        }
-
-        /* Result Modal */
-        .result-modal {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            padding: 20px 40px;
-            border-radius: 10px;
-            text-align: center;
-            font-size: 20px;
-            font-weight: bold;
-            color: white;
-            opacity: 0;
-            transition: opacity 0.5s ease-in-out;
-            z-index: 1000;
-            width: 40%;
-        }
-
-        .correction-box {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 20px;
-            margin-top: 20px;
-            border-radius: 5px;
-            min-height: 100px;
-            display: none;
-        }
-
-        #auth-section, #user-form-section, #pre-form-section, #main-section {
-            margin-bottom: 50px; /* Adds space between sections */
-        }
-
-        /* OK Button */
-        #modal-button {
-            margin-top: 15px;
-            padding: 10px 20px;
-            font-size: 18px;
-            font-weight: bold;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            color: white;
-            background-color: #333;
-            transition: 0.3s;
-        }
-
-        #modal-button:hover {
-            background-color: #555;
-        }
-
-        /* Form Styling */
-        #user-form-section form {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        #user-form-section label {
-            font-weight: bold;
-            margin-top: 5px;
-            color: white;
-        }
-
-        #user-form-section textarea,
-        #user-form-section select,
-        #user-form-section input {
-            align-self: center;
-            font-size: 16px;
-            padding: 10px;
-            border-radius: 5px;
-            border: none;
-            width: 100%;
-        }
-
-        #user-form-section select {
-            cursor: pointer;
-        }
-
-        #user-form-section textarea {
-            resize: none;
-        }
-
-        #user-form-section button {
-            background: #3498db;
-            color: white;
-            font-size: 18px;
-            padding: 10px;
-            cursor: pointer;
-            border-radius: 5px;
-            border: none;
-            transition: 0.3s;
-        }
-
-        #user-form-section button:hover {
-            background: #2980b9;
-        }
-
-        .question {
-            width: 100%;
-            border: double;
-        }
-
-        #post-form-section form,
-        #pre-form-section form {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        /* Style the question labels */
-        #post-form-section label,
-        #pre-form-section label {
-            font-weight: bold;
-            margin-bottom: 5px;
-            color: white;
-            display: block;
-        }
-
-        /* Style input fields, dropdowns, and textareas */
-        #post-form-section textarea,
-        #post-form-section select,
-        #post-form-section input,
-        #pre-form-section textarea,
-        #pre-form-section select,
-        #pre-form-section input {
-            align-self: center;
-            font-size: 16px;
-            padding: 10px;
-            border-radius: 5px;
-            border: none;
-            width: 90%;
-        }
-
-        /* Style select dropdown */
-        #post-form-section select,
-        #pre-form-section select {
-            cursor: pointer;
-        }
-
-        /* Prevent textarea resizing */
-        #post-form-section textarea,
-        #pre-form-section textarea {
-            resize: none;
-        }
-
-        #post-form-section .options,
-        #pre-form-section .options {
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            gap: 10px;
-            margin-top: 5px;
-        }
-
-        #post-form-section .options label,
-        #pre-form-section .options label {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            font-weight: normal;
-            text-align: center;
-        }
-
-        #post-form-section input[type="radio"],
-        #pre-form-section input[type="radio"] {
-            margin-bottom: 5px;
-        }
-
-        #post-form-section button,
-        #pre-form-section button {
-            background: #3498db;
-            color: white;
-            font-size: 18px;
-            padding: 10px;
-            cursor: pointer;
-            border-radius: 5px;
-            border: none;
-            transition: 0.3s;
-            width: 100%;
-            margin-top: 15px;
-        }
-
-        #post-form-section button:hover,
-        #pre-form-section button:hover {
-            background: #2980b9;
-        }
-
-        #preface-section-2,
-        #preface-section {
-            width: 60%;
-            margin: 50px auto;
-            background: rgba(0, 0, 0, 0.8);
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0px 0px 15px rgba(255, 255, 255, 0.2);
-            text-align: center;
-            color: white;
-        }
-
-        #preface-section-2 ul,
-        #preface-section ul {
-            text-align: left;
-            display: inline-block;
-        }
-
-        #start-button {
-            background: #3498db;
-            color: white;
-            font-size: 18px;
-            padding: 10px 20px;
-            cursor: pointer;
-            border-radius: 5px;
-            border: none;
-            transition: 0.3s;
-            margin-top: 20px;
-        }
-
-        #start-button:hover {
-            background: #2980b9;
-        }
-
-        #second-activity textarea {
-            align-self: center;
-            width: 95%;
-            font-size: 16px;
-            padding: 10px;
-            border-radius: 5px;
-            border: none;
-            resize: none;
-            display: block;
-        }
-
-        #second-activity button {
-            background: #3498db;
-            color: white;
-            font-size: 18px;
-            padding: 10px 20px;
-            cursor: pointer;
-            border-radius: 5px;
-            border: none;
-            transition: 0.3s;
-            margin-top: 10px;
-        }
-
-        #second-activity button:hover {
-            background: #2980b9;
-        }
-    </style>
-    <script>
-    let authKey = null;
-        let user_id = null;
-        let currentResponse = "";
-        let isAccurate = false; // Track which type of response is shown
-        let accurate = null;
-        let inaccurate = null;
-        let correction = null;
-        let historical_figure = null;
-        let activity_two_data = null;
-        let responseCount = 1;
-        let historicalFigures = [];
-
-        loadHistoricalFigures();
-        loadActivityTwoData();
-
-        async function authenticate() {
-            //const passcode = document.getElementById("passcode").value;
-            const passcode = "research123";
-            const response = await fetch("http://127.0.0.1:5000/authenticate", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ passcode: passcode })
-            });
-            const data = await response.json();
-
-            if (response.ok) {
-                authKey = data.auth_key;
-                document.getElementById("auth-section").style.display = "none";
-                document.getElementById("user-form-section").style.display = "block";
-            } else {
-                alert("Invalid passcode");
-            }
-        }
-
-        async function submitUserForm() {
-            const age = document.getElementById("age").value;
-            const grade = document.getElementById("grade").value;
-            const sex = document.getElementById("sex").value;
-
-            if (!age || !grade || !sex) {
-                alert("Please fill out all fields before proceeding.");
-                return;
-            }
-
-            const response = await fetch("http://127.0.0.1:5000/store-user-info", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ auth_key: authKey, age: age, grade: grade, sex: sex })
-            });
-            const data = await response.json();
-
-            if (response.ok) {
-                user_id = data.user_id;
-                // Hide form and show main section
-                document.getElementById("user-form-section").style.display = "none";
-                document.getElementById("pre-form-section").style.display = "block";
-            } else {
-                alert("Bad data!");
-            }
-        }
-        function getSelectedValue(questionName) {
-            const selectedOption = document.querySelector(`input[name="${questionName}"]:checked`);
-            return selectedOption ? selectedOption.value : null;
-        }
-
-
-        async function submitPreForm() {
-            const question_1 = getSelectedValue("q1");
-            const question_2 = getSelectedValue("q2");
-            const question_3 = getSelectedValue("q3");
-            const question_4 = getSelectedValue("q4");
-            const question_5 = getSelectedValue("q5");
-
-            if (!question_1 || !question_2 || !question_3 || !question_4 || !question_5) {
-                alert("Please fill out all fields before proceeding.");
-                return;
-            }
-
-            const response = await fetch("http://127.0.0.1:5000/store-pre-survey", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ auth_key: authKey, user_id: user_id, question_1: question_1, question_2: question_2, question_3: question_3, question_4: question_4, question_5: question_5 })
-            });
-
-            if (response.ok) {
-                // Hide form and show main section
-                document.getElementById("pre-form-section").style.display = "none";
-                document.getElementById("preface-section").style.display = "block";
-            } else {
-                alert("Bad data!");
-            }
-        }
-
-        async function submitPostForm() {
-            const question_1 = getSelectedValue("q6");
-            const question_2 = getSelectedValue("q7");
-            const question_3 = getSelectedValue("q8");
-            const question_4 = document.getElementById("q9").value;
-            const question_5 = document.getElementById("q10").value;
-
-            if (!question_1 || !question_2 || !question_3 || question_4 === "" || question_5 === "") {
-                alert("Please fill out all fields before proceeding.");
-                return;
-            }
-
-            const response = await fetch("http://127.0.0.1:5000/store-post-survey", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ auth_key: authKey, user_id: 1, question_1: question_1, question_2: question_2, question_3: question_3, question_4: question_4, question_5: question_5 })
-            });
-
-            if (response.ok) {
-                // Hide form and show main section
-                location.reload();
-            } else {
-                alert("Bad data!");
-            }
-        }
-
-        function startActivity() {
-            document.getElementById("preface-section").style.display = "none";
-            document.getElementById("main-section").style.display = "block";
-        }
-
-        function startActivity2() {
-            document.getElementById("preface-section-2").style.display = "none";
-            document.getElementById("second-activity").style.display = "block";
-        }
-
-        async function loadHistoricalFigures() {
-            try {
-                const response = await fetch("http://127.0.0.1:5000/historical-figures"); // Flask API URL
-                const data = await response.json();
-                historicalFigures = data.historical_figures;
-            } catch (error) {
-                console.error("Error loading historical figures:", error);
-            }
-        }
-
-        async function loadActivityTwoData() {
-            try {
-                const response = await fetch("http://127.0.0.1:5000/get-instructions"); // Flask API URL
-                activity_two_data = await response.json();
-            } catch (error) {
-                console.error("Error loading activity two instructions and prompts:", error);
-            }
-        }
-
-
-        function getRandomHistoricalFigure() {
-            if (historicalFigures.length > 0) {
-                const randomIndex = Math.floor(Math.random() * historicalFigures.length);
-                document.getElementById("historical_figure").value = historicalFigures[randomIndex];
-            } else {
-                alert("Error: Historical figures not loaded yet.");
-            }
-        }
-
-        async function generateResponses() {
-            const historicalFigure = document.getElementById("historical_figure").value;
-            historical_figure = historicalFigure;
-            if (!authKey) {
-                alert("You must authenticate first!");
-                return;
-            }
-
-            const generateButton = document.querySelector("button[onclick='generateResponses()']");
-            generateButton.disabled = true;
-            generateButton.style.opacity = "0.5";
-            generateButton.innerText = "Generating...";
-            const randomButton = document.querySelector("button[onclick='getRandomHistoricalFigure()']");
-            randomButton.disabled = true;
-            randomButton.style.opacity = "0.5";
-
-            const responseBox = document.getElementById("response-box");
-            const sourceBox = document.getElementById("source-box");
-            const correctionBox = document.getElementById("correction-box");
-            responseBox.innerHTML = `<p></p>`;
-            sourceBox.innerHTML = `<p></p>`;
-            correctionBox.innerHTML = `<p></p>`;
-            correctionBox.style.display = "none";
-
-            document.getElementById("button-container").style.display = "none";
-            document.getElementById("loader").style.display = "block";
-
-            const response = await fetch("http://127.0.0.1:5000/generate", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ auth_key: authKey, user_id: user_id, historical_figure: historicalFigure })
-            });
-
-            const data = await response.json();
-            document.getElementById("loader").style.display = "none";
-
-            if (response.ok) {
-                // Randomly choose between accurate and inaccurate response
-                isAccurate = Math.random() < 0.5;
-                let selectedResponse = isAccurate ? JSON.parse(data.responses).accurate : JSON.parse(data.responses).inaccurate;
-                accurate = JSON.parse(data.responses).accurate;
-                inaccurate = JSON.parse(data.responses).inaccurate;
-                correction = JSON.parse(data.responses).correction.explanation;
-                correctedCurrentResponse = selectedResponse.response
-                currentResponse = selectedResponse.response.replaceAll("**", "");
-                correctedCurrentResponse = correctedCurrentResponse.replaceAll(/\*\*(.*?)\*\*/g, '<span class="red-bold">$1</span>');
-                currentSource = selectedResponse.source;
-                correctionExplanation = JSON.parse(data.responses).correction.explanation.replaceAll(/\*\*(.*?)\*\*/g, '<span class="red-bold">$1</span>');
-
-                // Ensure response box is properly displayed
-                responseBox.innerHTML = `<p>${currentResponse}</p>`;
-                sourceBox.innerHTML = `<strong>Source:</strong> <span>${currentSource}</span>`;
-                sourceBox.style.display = "block";
-
-                // Show true/false buttons
-                document.getElementById("button-question").style.display = "block";
-                document.getElementById("button-container").style.display = "flex";
-            } else {
-                alert(data.error);
-                generateButton.disabled = false;
-                generateButton.style.opacity = "1";
-                generateButton.innerText = "Generate Summary";
-                randomButton.disabled = false;
-                randomButton.style.opacity = "1";
-            }
-            generateButton.innerText = "Finished";
-        }
-
-        function continueToNext() {
-            responseCount++;
-
-            // Update Counter Display
-            document.getElementById("response-counter").innerText = `${responseCount}/5`;
-
-            // Hide Continue button
-            document.getElementById("continue-container").style.display = "none";
-
-            // Clear response box for next round
-            const responseBox = document.getElementById("response-box");
-            const sourceBox = document.getElementById("source-box");
-            const correctionBox = document.getElementById("correction-box");
-            document.getElementById("historical_figure").value = "";
-            responseBox.innerHTML = `<p></p>`;
-            sourceBox.innerHTML = `<p></p>`;
-            correctionBox.innerHTML = `<p></p>`;
-            correctionBox.style.display = "none";
-
-            const generateButton = document.querySelector("button[onclick='generateResponses()']");
-            generateButton.disabled = false;
-            generateButton.style.opacity = "1";
-            generateButton.innerText = "Generate Summary";
-            const randomButton = document.querySelector("button[onclick='getRandomHistoricalFigure()']");
-            randomButton.disabled = false;
-            randomButton.style.opacity = "1";
-
-            // If max responses reached, show completion message
-            if (responseCount > 5) {
-                document.getElementById("main-section").style.display = "none";
-                document.getElementById("preface-section-2").style.display = "block";
-            }
-        }
-
-        function continueToPostSurvey() {
-            document.getElementById("second-activity").style.display = "none";
-            document.getElementById("post-form-section").style.display = "block";
-        }
-
-        async function recordUserChoice(userThinksTrue) {
-            const correct = (userThinksTrue === isAccurate);
-
-            // Get modal elements
-            const resultModal = document.getElementById("result-modal");
-            const resultText = document.getElementById("result-text");
-            const correctionBox = document.getElementById("correction-box");
-            const modalButton = document.getElementById("modal-button");
-            const responseBox = document.getElementById("response-box");
-
-            // Set message and styling
-            if (correct) {
-                resultModal.style.backgroundColor = "#2ecc71"; // Green for correct
-                resultText.innerHTML = "Correct! 🎉";
-            } else {
-                resultModal.style.backgroundColor = "#e74c3c"; // Red for incorrect
-                resultText.innerHTML = "Incorrect! ❌";
-            }
-
-            let user_response;
-            if (userThinksTrue) {
-                user_response = "Accurate";
-            } else {
-                user_response = "Inaccurate";
-            }
-
-            let presented;
-            // Show correction if response was inaccurate
-            if (!isAccurate) {
-                correctionBox.style.display = "block";
-                correctionBox.innerHTML = `<strong>Correction:</strong> ${correctionExplanation}`;
-                responseBox.innerHTML = `<p>${correctedCurrentResponse}</p>`;
-                presented = "Inaccurate";
-            } else {
-                correctionBox.style.display = "none";
-                presented = "Accurate";
-            }
-
-            const response = await fetch("http://127.0.0.1:5000/store-response", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ auth_key: authKey, user_id: user_id, historical_figure: historical_figure, accurate: accurate, inaccurate: inaccurate, correction: correction, presented_to_user: presented, user_response: user_response, is_correct: correct })
-            });
-
-            if (response.ok) {
-                // Show modal
-                resultModal.style.display = "block";
-                resultModal.style.opacity = "1";
-
-                // Show Continue button
-                document.getElementById("continue-container").style.display = "block";
-
-                // Hide True/False buttons
-                document.getElementById("button-container").style.display = "none";
-                document.getElementById("button-question").style.display = "none";
-
-                // Close modal on button click
-                modalButton.onclick = function () {
-                    resultModal.style.opacity = "0";
-                    setTimeout(() => { resultModal.style.display = "none"; }, 500);
-                };
-
-                // Stop responses after 5 rounds
-                if (responseCount > 5) {
-                    document.getElementById("continue-container").innerHTML = "<p>All responses completed.</p>";
-                }
-            } else {
-                alert("Bad data!");
-            }
-        }
-
-        function toggleInstructions() {
-            const checkbox = document.getElementById("custom-checkbox");
-            const instructions = document.getElementById("instructions");
-            instructions.readOnly = !checkbox.checked;
-        }
-
-        function setInstructions() {
-            const selectedOption = document.querySelector('input[name="instruction-option"]:checked').value;
-
-            if (!activity_two_data) {
-                alert("Error: Activity 2 data not loaded.");
-                return;
-            }
-
-            if (selectedOption === "misleading") {
-                document.getElementById("instructions").value = activity_two_data.misleading;
-                document.getElementById("prompt").value = activity_two_data.misleading_prompt;
-            } else if (selectedOption === "time_traveler") {
-                document.getElementById("instructions").value = activity_two_data.time_traveler;
-                document.getElementById("prompt").value = activity_two_data.time_traveler_prompt;
-            } else if (selectedOption === "alien") {
-                document.getElementById("instructions").value = activity_two_data.alien;
-                document.getElementById("prompt").value = activity_two_data.alien_prompt;
-            }
-        }
-
-        async function generateNewResponse() {
-            const instructions = document.getElementById("instructions").value;
-            const prompt = document.getElementById("prompt").value;
-
-            if (!authKey) {
-                alert("You must authenticate first!");
-                return;
-            }
-
-            if (!prompt.trim()) {
-                alert("Please enter a prompt.");
-                return;
-            }
-
-            const generateButton = document.getElementById("generate-new-button");
-            generateButton.disabled = true;
-            generateButton.style.opacity = "0.5";
-            generateButton.innerText = "Generating...";
-
-            document.getElementById("loader-new").style.display = "block";
-
-            const response = await fetch("http://127.0.0.1:5000/generate-new", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ auth_key: authKey, instructions: instructions, prompt: prompt })
-            });
-
-            const data = await response.json();
-            document.getElementById("loader-new").style.display = "none";
-
-            if (response.ok) {
-                document.getElementById("new-response-box").innerHTML = `<p>${data.responses}</p>`;
-                document.getElementById("continue-container-2").style.display = "block";
-            } else {
-                alert("Error generating response.");
-            }
-
-            generateButton.disabled = false;
-            generateButton.style.opacity = "1";
-            generateButton.innerText = "Generate";
-        }
-    </script>
-</head>
-<body>
-    <h2>DoYouTrustAI</h2>
-
-    <div id="auth-section" class="container">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>DoYouTrustAI</title>
+      <link rel="stylesheet" href="style.css">
+    </head>
+    <body>
+      <h2>DoYouTrustAI</h2>
+
+      <div id="auth-section" class="container">
         <h3>Enter Passcode:</h3>
         <input type="password" id="passcode">
         <button onclick="authenticate()">Submit</button>
-    </div>
+      </div>
 
-    <div id="user-form-section" class="container" style="display:none;">
+      <div id="user-form-section" class="container" style="display:none;">
         <h3>Please Provide Your Details</h3>
         <form id="user-form">
-            <label for="age">Your Age:</label>
-            <input type="text" id="age" required>
+          <label for="age">Your Age:</label>
+          <input type="text" id="age" required>
 
-            <label for="grade">Your Grade Level:</label>
-            <select id="grade" class="" required>
-                <option value="">Select one</option>
-                <option value="6">6</option>
-                <option value="7">7</option>
-                <option value="8">8</option>
-                <option value="9">9</option>
-                <option value="10">10</option>
-                <option value="11">11</option>
-                <option value="12">12</option>
-            </select>
+          <label for="grade">Your Grade Level:</label>
+          <select id="grade" required>
+            <option value="">Select one</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="10">10</option>
+            <option value="11">11</option>
+            <option value="12">12</option>
+          </select>
 
-            <label for="sex">Sex:</label>
-            <select id="sex" class="" required>
-                <option value="">Select one</option>
-                <option value="Male">Male</option>
-                <option value="Female">Female</option>
-                <option value="Other">Other</option>
-                <option value="Undetermined">Prefer not to say</option>
-            </select>
+          <label for="sex">Sex:</label>
+          <select id="sex" required>
+            <option value="">Select one</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Other">Other</option>
+            <option value="Undetermined">Prefer not to say</option>
+          </select>
 
-            <button type="button" onclick="submitUserForm()">Submit</button>
+          <button type="button" onclick="submitUserForm()">Submit</button>
         </form>
-    </div>
+      </div>
 
-    <div id="pre-form-section" class="container" style="display:none;">
+      <div id="pre-form-section" class="container" style="display:none;">
         <h3>Pre-Activity Survey</h3>
         <form id="pre-form">
-            <div class="question">
-                <p>1. Have you ever used AI (like ChatGPT, Siri, or Alexa) to help with homework or learning?</p>
-                <div class="options" id="pre_question_1">
-                    <label><input type="radio" name="q1" value="1" required>Never</label>
-                    <label><input type="radio" name="q1" value="2">Once or twice</label>
-                    <label><input type="radio" name="q1" value="3">Sometimes</label>
-                    <label><input type="radio" name="q1" value="4">Often</label>
-                    <label><input type="radio" name="q1" value="5">All the time</label>
-                </div>
+          <div class="question">
+            <p>1. Have you ever used AI (like ChatGPT, Siri, or Alexa) to help with homework or learning?</p>
+            <div class="options" id="pre_question_1">
+              <label><input type="radio" name="q1" value="1" required>Never</label>
+              <label><input type="radio" name="q1" value="2">Once or twice</label>
+              <label><input type="radio" name="q1" value="3">Sometimes</label>
+              <label><input type="radio" name="q1" value="4">Often</label>
+              <label><input type="radio" name="q1" value="5">All the time</label>
             </div>
+          </div>
 
-            <div class="question">
-                <p>2. When AI gives you an answer, how often do you check if it’s correct?</p>
-                <div class="options" id="pre_question_2">
-                    <label><input type="radio" name="q2" value="1" required>Never</label>
-                    <label><input type="radio" name="q2" value="2">Rarely</label>
-                    <label><input type="radio" name="q2" value="3">Sometimes</label>
-                    <label><input type="radio" name="q2" value="4">Often</label>
-                    <label><input type="radio" name="q2" value="5">Always</label>
-                </div>
+          <div class="question">
+            <p>2. When AI gives you an answer, how often do you check if it’s correct?</p>
+            <div class="options" id="pre_question_2">
+              <label><input type="radio" name="q2" value="1" required>Never</label>
+              <label><input type="radio" name="q2" value="2">Rarely</label>
+              <label><input type="radio" name="q2" value="3">Sometimes</label>
+              <label><input type="radio" name="q2" value="4">Often</label>
+              <label><input type="radio" name="q2" value="5">Always</label>
             </div>
+          </div>
 
-            <div class="question">
-                <p>3. Do you think AI can always be trusted to give the right answers?</p>
-                <div class="options" id="pre_question_3">
-                    <label><input type="radio" name="q3" value="1" required>Not at all</label>
-                    <label><input type="radio" name="q3" value="2">Rarely</label>
-                    <label><input type="radio" name="q3" value="3">Sometimes</label>
-                    <label><input type="radio" name="q3" value="4">Most of the time</label>
-                    <label><input type="radio" name="q3" value="5">Always</label>
-                </div>
+          <div class="question">
+            <p>3. Do you think AI can always be trusted to give the right answers?</p>
+            <div class="options" id="pre_question_3">
+              <label><input type="radio" name="q3" value="1" required>Not at all</label>
+              <label><input type="radio" name="q3" value="2">Rarely</label>
+              <label><input type="radio" name="q3" value="3">Sometimes</label>
+              <label><input type="radio" name="q3" value="4">Most of the time</label>
+              <label><input type="radio" name="q3" value="5">Always</label>
             </div>
+          </div>
 
-            <div class="question">
-                <p>4. Have you ever noticed AI giving an answer that seemed wrong or confusing?</p>
-                <div class="options" id="pre_question_4">
-                    <label><input type="radio" name="q4" value="1" required>Never</label>
-                    <label><input type="radio" name="q4" value="2">Once or twice</label>
-                    <label><input type="radio" name="q4" value="3">Sometimes</label>
-                    <label><input type="radio" name="q4" value="4">Often</label>
-                    <label><input type="radio" name="q4" value="5">Many times</label>
-                </div>
+          <div class="question">
+            <p>4. Have you ever noticed AI giving an answer that seemed wrong or confusing?</p>
+            <div class="options" id="pre_question_4">
+              <label><input type="radio" name="q4" value="1" required>Never</label>
+              <label><input type="radio" name="q4" value="2">Once or twice</label>
+              <label><input type="radio" name="q4" value="3">Sometimes</label>
+              <label><input type="radio" name="q4" value="4">Often</label>
+              <label><input type="radio" name="q4" value="5">Many times</label>
             </div>
+          </div>
 
-            <div class="question">
-                <p>5. If an AI and your teacher gave different answers, who would you trust more?</p>
-                <div class="options" id="pre_question_5">
-                    <label><input type="radio" name="q5" value="1" required>The AI</label>
-                    <label><input type="radio" name="q5" value="2">Probably the AI</label>
-                    <label><input type="radio" name="q5" value="3">Not sure</label>
-                    <label><input type="radio" name="q5" value="4">Probably my teacher</label>
-                    <label><input type="radio" name="q5" value="5">My teacher</label>
-                </div>
+          <div class="question">
+            <p>5. If an AI and your teacher gave different answers, who would you trust more?</p>
+            <div class="options" id="pre_question_5">
+              <label><input type="radio" name="q5" value="1" required>The AI</label>
+              <label><input type="radio" name="q5" value="2">Probably the AI</label>
+              <label><input type="radio" name="q5" value="3">Not sure</label>
+              <label><input type="radio" name="q5" value="4">Probably my teacher</label>
+              <label><input type="radio" name="q5" value="5">My teacher</label>
             </div>
+          </div>
 
-            <button type="button" onclick="submitPreForm()">Submit</button>
+          <button type="button" onclick="submitPreForm()">Submit</button>
         </form>
-    </div>
+      </div>
 
-    <div id="preface-section" class="container" style="display:none;">
+      <div id="preface-section" class="container" style="display:none;">
         <h2>Welcome to the DoYouTrustAI Activity 1!</h2>
-        <p>
-            In this activity, you will be presented with <strong>five AI-generated statements</strong> about historical figures. However, there is a twist:
-        </p>
+        <p>In this activity, you will be presented with <strong>five AI-generated statements</strong> about historical figures. However, there is a twist:</p>
         <ul>
-            <li><strong>Some responses will be completely accurate</strong></li>
-            <li><strong>Some responses will contain subtle inaccuracies designed to mislead you</strong></li>
+          <li><strong>Some responses will be completely accurate</strong></li>
+          <li><strong>Some responses will contain subtle inaccuracies designed to mislead you</strong></li>
         </ul>
-
-        <p>
-            Your task is to <strong>analyze each response carefully</strong> and determine whether the information is <strong>true or false</strong> based on your knowledge and reasoning.
-        </p>
-
+        <p>Your task is to <strong>analyze each response carefully</strong> and determine whether the information is <strong>true or false</strong> based on your knowledge and reasoning.</p>
         <h3>How It Works:</h3>
         <p>You will be asked to enter the name of a historical figure. If you cannot think of someone, you can always click the "Random Person" button until you find one that is interesting.</p>
         <p>You will then click the "Generate Summary" button to allow the AI to provide you with facts or misleading information regarding the historical figure of your choice.</p>
         <p>At the end of each response, you will be asked to <strong>make a choice</strong>:</p>
         <ul>
-            <li><strong>If you believe the information is accurate, select "True"</strong></li>
-            <li><strong>If you believe the information is incorrect or misleading, select "False"</strong></li>
+          <li><strong>If you believe the information is accurate, select "True"</strong></li>
+          <li><strong>If you believe the information is incorrect or misleading, select "False"</strong></li>
         </ul>
-
-        <p>
-            After making your decision, you will be provided with <strong>a correction (if applicable)</strong> to reveal whether you were right or wrong.
-        </p>
-
-        <p>
-            This experiment aims to explore <strong>how people evaluate information provided by AI</strong> and how trust in AI-generated responses is formed.
-        </p>
-
+        <p>After making your decision, you will be provided with <strong>a correction (if applicable)</strong> to reveal whether you were right or wrong.</p>
+        <p>This experiment aims to explore <strong>how people evaluate information provided by AI</strong> and how trust in AI-generated responses is formed.</p>
         <button id="start-button" onclick="startActivity()">Begin</button>
-    </div>
+      </div>
 
-    <div id="main-section" class="container" style="display:none;">
+      <div id="main-section" class="container" style="display:none;">
         <div id="response-counter" class="counter">1/5</div>
         <h2>Activity 1: Detecting Misinformation</h2>
         <br/>
         <h3>Enter The Name of a Historical Figure:</h3>
         <input type="text" id="historical_figure">
         <div style="display: flex; gap: 10px; justify-content: center; margin-top: 20px;">
-            <button id="random-button" onclick="getRandomHistoricalFigure()">Random Person</button>
-            <button id="generate-button" onclick="generateResponses()">Generate Summary</button>
+          <button id="random-button" onclick="getRandomHistoricalFigure()">Random Person</button>
+          <button id="generate-button" onclick="generateResponses()">Generate Summary</button>
         </div>
         <p><strong>NOTE:</strong> The historical figure that you choose is stored, it will be viewed later.</p>
 
@@ -1016,49 +148,43 @@
         <div id="correction-box" class="correction-box"></div>
 
         <div id="button-question" class="button-question" style="display: none; text-align: center;">
-            <p>Do you think that this summary is</p>
+          <p>Do you think that this summary is</p>
         </div>
 
         <div id="button-container" class="button-container">
-            <button class="true-btn" onclick="recordUserChoice(true)">True</button>
-            <button class="false-btn" onclick="recordUserChoice(false)">False</button>
+          <button class="true-btn" onclick="recordUserChoice(true)">True</button>
+          <button class="false-btn" onclick="recordUserChoice(false)">False</button>
         </div>
         <div id="continue-container" style="display: none;">
-            <button id="continue-button" onclick="continueToNext()">Continue</button>
+          <button id="continue-button" onclick="continueToNext()">Continue</button>
         </div>
-    </div>
+      </div>
 
-    <div id="preface-section-2" class="container" style="display:none;">
+      <div id="preface-section-2" class="container" style="display:none;">
         <h2>Welcome to the DoYouTrustAI Activity 2!</h2>
-
         <p>In this activity, you will explore the power of <strong>prompt engineering</strong>—the way we give AI instructions to guide its responses.</p>
-
         <h3>How It Works:</h3>
         <ul>
-            <li>You will choose from three <strong>pre-set instruction types</strong>, each with a unique AI behavior.</li>
-            <li>Or, you can enable <strong>"Customize Instructions"</strong> to write your own instructions or modify any others!</li>
-            <li>Enter a <strong>prompt</strong> (a question or command) that the AI will respond to.</li>
-            <li>Click <strong>Generate</strong> to see how different instructions affect the AI’s response.</li>
+          <li>You will choose from three <strong>pre-set instruction types</strong>, each with a unique AI behavior.</li>
+          <li>Or, you can enable <strong>"Customize Instructions"</strong> to write your own instructions or modify any others!</li>
+          <li>Enter a <strong>prompt</strong> (a question or command) that the AI will respond to.</li>
+          <li>Click <strong>Generate</strong> to see how different instructions affect the AI’s response.</li>
         </ul>
-
         <h3>Types of Instructions:</h3>
         <ul>
-            <li><strong>Misleading Summary:</strong> The AI will generate a response that subtly includes incorrect or misleading information.</li>
-            <li><strong>Time Traveler:</strong> The AI will roleplay as a historical figure from the past, answering as if it’s still in that time.</li>
-            <li><strong>Alien Perspective:</strong> The AI will respond as if it’s an extraterrestrial trying to understand human concepts.</li>
+          <li><strong>Misleading Summary:</strong> The AI will generate a response that subtly includes incorrect or misleading information.</li>
+          <li><strong>Time Traveler:</strong> The AI will roleplay as a historical figure from the past, answering as if it’s still in that time.</li>
+          <li><strong>Alien Perspective:</strong> The AI will respond as if it’s an extraterrestrial trying to understand human concepts.</li>
         </ul>
-
         <p>Experiment with different prompts to see how AI behavior changes based on <strong>how you ask questions!</strong></p>
-
         <button id="start-activity-2-button" onclick="startActivity2()">Begin</button>
-    </div>
+      </div>
 
-    <div id="second-activity" class="container" style="display:none;">
+      <div id="second-activity" class="container" style="display:none;">
         <h2>Activity 2: Prompt Engineering</h2>
 
         <label for="instructions">Instructions</label>
-        <textarea id="instructions" rows="10" readonly>These are the default instructions. Modify them by selecting "Customize Instructions" below, or by selecting
-            one of the options.</textarea>
+        <textarea id="instructions" rows="10" readonly>These are the default instructions. Modify them by selecting "Customize Instructions" below, or by selecting one of the options.</textarea>
 
         <br/>
         <br/>
@@ -1067,10 +193,10 @@
         <textarea id="prompt" rows="10"></textarea>
 
         <div style="display: flex; align-items: center; justify-content: center; gap: 15px; margin: 10px;">
-            <label><input type="radio" name="instruction-option" value="misleading" onclick="setInstructions()">Misleading Summary</label>
-            <label><input type="radio" name="instruction-option" value="time_traveler" onclick="setInstructions()">Time Traveler</label>
-            <label><input type="radio" name="instruction-option" value="alien" onclick="setInstructions()">Alien</label>
-            <label><input type="checkbox" id="custom-checkbox" onclick="toggleInstructions()">Customize Instructions</label>
+          <label><input type="radio" name="instruction-option" value="misleading" onclick="setInstructions()">Misleading Summary</label>
+          <label><input type="radio" name="instruction-option" value="time_traveler" onclick="setInstructions()">Time Traveler</label>
+          <label><input type="radio" name="instruction-option" value="alien" onclick="setInstructions()">Alien</label>
+          <label><input type="checkbox" id="custom-checkbox" onclick="toggleInstructions()">Customize Instructions</label>
         </div>
 
         <br/>
@@ -1080,68 +206,68 @@
         <p><strong>NOTE:</strong> Your instructions and prompts are stored, they will be viewed later.</p>
 
         <div id="loader-new" class="loader"></div>
-
         <div id="new-response-box" class="response-box"></div>
-
         <div id="continue-container-2" style="display: none;">
-            <button id="continue-button" onclick="continueToPostSurvey()">Continue</button>
+          <button id="continue-button" onclick="continueToPostSurvey()">Continue</button>
         </div>
-    </div>
+      </div>
 
-    <div id="post-form-section" class="container" style="display:none;">
+      <div id="post-form-section" class="container" style="display:none;">
         <h3>Post-Activity Survey</h3>
         <form id="post-form">
-
-            <div class="question">
-                <p>1. How interesting did you find these activities?</p>
-                <div class="options" id="post_question_1">
-                    <label><input type="radio" name="q6" value="1" required>Not at all</label>
-                    <label><input type="radio" name="q6" value="2">A little</label>
-                    <label><input type="radio" name="q6" value="3">Somewhat</label>
-                    <label><input type="radio" name="q6" value="4">Very</label>
-                    <label><input type="radio" name="q6" value="5">Extremely</label>
-                </div>
+          <div class="question">
+            <p>1. How interesting did you find these activities?</p>
+            <div class="options" id="post_question_1">
+              <label><input type="radio" name="q6" value="1" required>Not at all</label>
+              <label><input type="radio" name="q6" value="2">A little</label>
+              <label><input type="radio" name="q6" value="3">Somewhat</label>
+              <label><input type="radio" name="q6" value="4">Very</label>
+              <label><input type="radio" name="q6" value="5">Extremely</label>
             </div>
+          </div>
 
-            <div class="question">
-                <p>2. Do you feel more confident in spotting misleading or incorrect AI responses?</p>
-                <div class="options" id="post_question_2">
-                    <label><input type="radio" name="q7" value="1" required>Not at all</label>
-                    <label><input type="radio" name="q7" value="2">A little</label>
-                    <label><input type="radio" name="q7" value="3">Somewhat</label>
-                    <label><input type="radio" name="q7" value="4">Very</label>
-                    <label><input type="radio" name="q7" value="5">Extremely</label>
-                </div>
+          <div class="question">
+            <p>2. Do you feel more confident in spotting misleading or incorrect AI responses?</p>
+            <div class="options" id="post_question_2">
+              <label><input type="radio" name="q7" value="1" required>Not at all</label>
+              <label><input type="radio" name="q7" value="2">A little</label>
+              <label><input type="radio" name="q7" value="3">Somewhat</label>
+              <label><input type="radio" name="q7" value="4">Very</label>
+              <label><input type="radio" name="q7" value="5">Extremely</label>
             </div>
+          </div>
 
-            <div class="question">
-                <p>3. Did these activities change how much you trust AI-generated answers?</p>
-                <div class="options" id="post_question_3">
-                    <label><input type="radio" name="q8" value="1" required>Now I trust AI less</label>
-                    <label><input type="radio" name="q8" value="2">Slightly less</label>
-                    <label><input type="radio" name="q8" value="3">No change</label>
-                    <label><input type="radio" name="q8" value="4">Slightly more</label>
-                    <label><input type="radio" name="q8" value="5">Now I trust AI more</label>
-                </div>
+          <div class="question">
+            <p>3. Did these activities change how much you trust AI-generated answers?</p>
+            <div class="options" id="post_question_3">
+              <label><input type="radio" name="q8" value="1" required>Now I trust AI less</label>
+              <label><input type="radio" name="q8" value="2">Slightly less</label>
+              <label><input type="radio" name="q8" value="3">No change</label>
+              <label><input type="radio" name="q8" value="4">Slightly more</label>
+              <label><input type="radio" name="q8" value="5">Now I trust AI more</label>
             </div>
+          </div>
 
-            <div class="question">
-                <p>4. What was your favorite part of the activities?</p>
-                <textarea id="q9" rows="3" placeholder="Write your answer here..."></textarea>
-            </div>
+          <div class="question">
+            <p>4. What was your favorite part of the activities?</p>
+            <textarea id="q9" rows="3" placeholder="Write your answer here..."></textarea>
+          </div>
 
-            <div class="question">
-                <p>5. If you could add or change something in these activities, what would it be?</p>
-                <textarea id="q10" rows="3" placeholder="Write your answer here..."></textarea>
-            </div>
+          <div class="question">
+            <p>5. If you could add or change something in these activities, what would it be?</p>
+            <textarea id="q10" rows="3" placeholder="Write your answer here..."></textarea>
+          </div>
 
-            <button type="button" onclick="submitPostForm()">Finish</button>
+          <button type="button" onclick="submitPostForm()">Finish</button>
         </form>
-    </div>
+      </div>
 
-    <div id="result-modal" class="result-modal">
+      <div id="result-modal" class="result-modal">
         <span id="result-text"></span>
         <button id="modal-button">OK</button>
-    </div>
-</body>
+      </div>
+
+      <!-- Link to the external JS file -->
+      <script src="script.js"></script>
+    </body>
 </html>
