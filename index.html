@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Trust Activity</title>
+    <title>DoYouTrustAI</title>
     <style>
         /* Background and layout styling */
         body {
@@ -142,6 +142,7 @@
         }
 
         /* Source box */
+        .button-question,
         .source-box {
             margin-top: 10px;
             font-size: 14px;
@@ -149,15 +150,18 @@
             display: none; /* Initially hidden */
         }
 
+        .button-question a,
         .source-box a {
             color: #1abc9c;
             text-decoration: none;
         }
 
+        .button-question a:hover
         .source-box a:hover {
             text-decoration: underline;
         }
 
+        .button-question span,
         .source-box span {
             color: inherit;
             text-decoration: none;
@@ -593,12 +597,13 @@
                 sourceBox.style.display = "block";
 
                 // Show true/false buttons
+                document.getElementById("button-question").style.display = "block";
                 document.getElementById("button-container").style.display = "flex";
             } else {
                 alert(data.error);
                 generateButton.disabled = false;
                 generateButton.style.opacity = "1";
-                generateButton.innerText = "Generate";
+                generateButton.innerText = "Generate Summary";
                 randomButton.disabled = false;
                 randomButton.style.opacity = "1";
             }
@@ -629,7 +634,7 @@
             const generateButton = document.querySelector("button[onclick='generateResponses()']");
             generateButton.disabled = false;
             generateButton.style.opacity = "1";
-            generateButton.innerText = "Generate";
+            generateButton.innerText = "Generate Summary";
             const randomButton = document.querySelector("button[onclick='getRandomHistoricalFigure()']");
             randomButton.disabled = false;
             randomButton.style.opacity = "1";
@@ -695,6 +700,7 @@
 
                 // Hide True/False buttons
                 document.getElementById("button-container").style.display = "none";
+                document.getElementById("button-question").style.display = "none";
 
                 // Close modal on button click
                 modalButton.onclick = function () {
@@ -713,7 +719,7 @@
     </script>
 </head>
 <body>
-    <h2>AI Trust Activity</h2>
+    <h2>DoYouTrustAI</h2>
 
     <div id="auth-section" class="container">
         <h3>Enter Passcode:</h3>
@@ -870,7 +876,7 @@
     </div>
 
     <div id="preface-section" class="container" style="display:none;">
-        <h2>Welcome to the AI Trust Research Activity!</h2>
+        <h2>Welcome to the DoYouTrustAI Research Activity 1!</h2>
         <p>
             In this activity, you will be presented with <strong>five AI-generated statements</strong> about historical figures. However, there is a twist:
         </p>
@@ -884,8 +890,8 @@
         </p>
 
         <h3>How It Works:</h3>
-        <p>You will be asked to enter the name of a historical figure. If you cannot think of someone, you can always click the "Random" button until you find one that is interesting.</p>
-        <p>You will then click the "Generate" button to allow the AI to provide you with facts or misleading information regarding the historical figure of your choice.</p>
+        <p>You will be asked to enter the name of a historical figure. If you cannot think of someone, you can always click the "Random Person" button until you find one that is interesting.</p>
+        <p>You will then click the "Generate Summary" button to allow the AI to provide you with facts or misleading information regarding the historical figure of your choice.</p>
         <p>At the end of each response, you will be asked to <strong>make a choice</strong>:</p>
         <ul>
             <li><strong>If you believe the information is accurate, select "True"</strong></li>
@@ -905,11 +911,11 @@
 
     <div id="main-section" class="container" style="display:none;">
         <div id="response-counter" class="counter">1/5</div>
-        <h3>Enter a Historical Figure:</h3>
+        <h3>Enter The Name of a Historical Figure:</h3>
         <input type="text" id="historical_figure">
         <div style="display: flex; gap: 10px; justify-content: center; margin-top: 20px;">
-            <button id="random-button" onclick="getRandomHistoricalFigure()">Random</button>
-            <button id="generate-button" onclick="generateResponses()">Generate</button>
+            <button id="random-button" onclick="getRandomHistoricalFigure()">Random Person</button>
+            <button id="generate-button" onclick="generateResponses()">Generate Summary</button>
         </div>
 
         <div id="loader" class="loader"></div>
@@ -917,6 +923,10 @@
         <div id="response-box" class="response-box"></div>
         <div id="source-box" class="source-box"></div>
         <div id="correction-box" class="correction-box"></div>
+
+        <div id="button-question" class="button-question" style="display: none; text-align: center;">
+            <p>Do you think that this summary is</p>
+        </div>
 
         <div id="button-container" class="button-container">
             <button class="true-btn" onclick="recordUserChoice(true)">True</button>
