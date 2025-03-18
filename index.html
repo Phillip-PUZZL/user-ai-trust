@@ -91,6 +91,7 @@
         }
 
         /* Continue Button */
+        #continue-container-2,
         #continue-container {
             text-align: center;
             margin-top: 20px;
@@ -308,6 +309,7 @@
             border: double;
         }
 
+        #post-form-section form,
         #pre-form-section form {
             display: flex;
             flex-direction: column;
@@ -315,6 +317,7 @@
         }
 
         /* Style the question labels */
+        #post-form-section label,
         #pre-form-section label {
             font-weight: bold;
             margin-bottom: 5px;
@@ -323,6 +326,9 @@
         }
 
         /* Style input fields, dropdowns, and textareas */
+        #post-form-section textarea,
+        #post-form-section select,
+        #post-form-section input,
         #pre-form-section textarea,
         #pre-form-section select,
         #pre-form-section input {
@@ -331,43 +337,45 @@
             padding: 10px;
             border-radius: 5px;
             border: none;
-            width: 100%;
+            width: 90%;
         }
 
         /* Style select dropdown */
+        #post-form-section select,
         #pre-form-section select {
             cursor: pointer;
         }
 
         /* Prevent textarea resizing */
+        #post-form-section textarea,
         #pre-form-section textarea {
             resize: none;
         }
 
-        /* Style the radio button container to align horizontally */
+        #post-form-section .options,
         #pre-form-section .options {
             display: flex;
-            justify-content: space-around; /* Evenly space out the radio buttons */
+            justify-content: space-around;
             align-items: center;
             gap: 10px;
             margin-top: 5px;
         }
 
-        /* Ensure radio button labels appear below the buttons */
+        #post-form-section .options label,
         #pre-form-section .options label {
             display: flex;
-            flex-direction: column; /* Stack radio button on top and label below */
+            flex-direction: column;
             align-items: center;
             font-weight: normal;
             text-align: center;
         }
 
-        /* Add some space between the radio button and label text */
+        #post-form-section input[type="radio"],
         #pre-form-section input[type="radio"] {
             margin-bottom: 5px;
         }
 
-        /* Style the submit button */
+        #post-form-section button,
         #pre-form-section button {
             background: #3498db;
             color: white;
@@ -381,11 +389,12 @@
             margin-top: 15px;
         }
 
-        /* Change button color on hover */
+        #post-form-section button:hover,
         #pre-form-section button:hover {
             background: #2980b9;
         }
 
+        #preface-section-2,
         #preface-section {
             width: 60%;
             margin: 50px auto;
@@ -397,6 +406,7 @@
             color: white;
         }
 
+        #preface-section-2 ul,
         #preface-section ul {
             text-align: left;
             display: inline-block;
@@ -417,9 +427,36 @@
         #start-button:hover {
             background: #2980b9;
         }
+
+        #second-activity textarea {
+            align-self: center;
+            width: 95%;
+            font-size: 16px;
+            padding: 10px;
+            border-radius: 5px;
+            border: none;
+            resize: none;
+            display: block;
+        }
+
+        #second-activity button {
+            background: #3498db;
+            color: white;
+            font-size: 18px;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 5px;
+            border: none;
+            transition: 0.3s;
+            margin-top: 10px;
+        }
+
+        #second-activity button:hover {
+            background: #2980b9;
+        }
     </style>
     <script>
-        let authKey = null;
+    let authKey = null;
         let user_id = null;
         let currentResponse = "";
         let isAccurate = false; // Track which type of response is shown
@@ -427,6 +464,12 @@
         let inaccurate = null;
         let correction = null;
         let historical_figure = null;
+        let activity_two_data = null;
+        let responseCount = 1;
+        let historicalFigures = [];
+
+        loadHistoricalFigures();
+        loadActivityTwoData();
 
         async function authenticate() {
             //const passcode = document.getElementById("passcode").value;
@@ -485,13 +528,8 @@
             const question_3 = getSelectedValue("q3");
             const question_4 = getSelectedValue("q4");
             const question_5 = getSelectedValue("q5");
-            const question_6 = getSelectedValue("q6");
-            const question_7 = getSelectedValue("q7");
-            const question_8 = getSelectedValue("q8");
-            const question_9 = getSelectedValue("q9");
-            const question_10 = getSelectedValue("q10");
 
-            if (!question_1 || !question_2 || !question_3 || !question_4 || !question_5 || !question_6 || !question_7 || !question_8 || !question_9 || !question_10) {
+            if (!question_1 || !question_2 || !question_3 || !question_4 || !question_5) {
                 alert("Please fill out all fields before proceeding.");
                 return;
             }
@@ -499,7 +537,7 @@
             const response = await fetch("http://127.0.0.1:5000/store-pre-survey", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ auth_key: authKey, user_id: user_id, question_1: question_1, question_2: question_2, question_3: question_3, question_4: question_4, question_5: question_5, question_6: question_6, question_7: question_7, question_8: question_8, question_9: question_9, question_10: question_10 })
+                body: JSON.stringify({ auth_key: authKey, user_id: user_id, question_1: question_1, question_2: question_2, question_3: question_3, question_4: question_4, question_5: question_5 })
             });
 
             if (response.ok) {
@@ -511,17 +549,45 @@
             }
         }
 
+        async function submitPostForm() {
+            const question_1 = getSelectedValue("q6");
+            const question_2 = getSelectedValue("q7");
+            const question_3 = getSelectedValue("q8");
+            const question_4 = document.getElementById("q9").value;
+            const question_5 = document.getElementById("q10").value;
+
+            if (!question_1 || !question_2 || !question_3 || question_4 === "" || question_5 === "") {
+                alert("Please fill out all fields before proceeding.");
+                return;
+            }
+
+            const response = await fetch("http://127.0.0.1:5000/store-post-survey", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ auth_key: authKey, user_id: 1, question_1: question_1, question_2: question_2, question_3: question_3, question_4: question_4, question_5: question_5 })
+            });
+
+            if (response.ok) {
+                // Hide form and show main section
+                location.reload();
+            } else {
+                alert("Bad data!");
+            }
+        }
+
         function startActivity() {
             document.getElementById("preface-section").style.display = "none";
             document.getElementById("main-section").style.display = "block";
         }
 
-        let historicalFigures = [];
+        function startActivity2() {
+            document.getElementById("preface-section-2").style.display = "none";
+            document.getElementById("second-activity").style.display = "block";
+        }
 
-        // Load historical figures from the JSON file
         async function loadHistoricalFigures() {
             try {
-                const response = await fetch("historical_figures.json"); // Adjust the path if needed
+                const response = await fetch("http://127.0.0.1:5000/historical-figures"); // Flask API URL
                 const data = await response.json();
                 historicalFigures = data.historical_figures;
             } catch (error) {
@@ -529,10 +595,16 @@
             }
         }
 
-        // Call the function to load data when the page loads
-        loadHistoricalFigures();
+        async function loadActivityTwoData() {
+            try {
+                const response = await fetch("http://127.0.0.1:5000/get-instructions"); // Flask API URL
+                activity_two_data = await response.json();
+            } catch (error) {
+                console.error("Error loading activity two instructions and prompts:", error);
+            }
+        }
 
-        // Function to select a random historical figure
+
         function getRandomHistoricalFigure() {
             if (historicalFigures.length > 0) {
                 const randomIndex = Math.floor(Math.random() * historicalFigures.length);
@@ -572,7 +644,7 @@
             const response = await fetch("http://127.0.0.1:5000/generate", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ auth_key: authKey, historical_figure: historicalFigure })
+                body: JSON.stringify({ auth_key: authKey, user_id: user_id, historical_figure: historicalFigure })
             });
 
             const data = await response.json();
@@ -610,10 +682,8 @@
             generateButton.innerText = "Finished";
         }
 
-        let responseCount = 1; // Track responses
-
         function continueToNext() {
-            responseCount++; // Increment counter
+            responseCount++;
 
             // Update Counter Display
             document.getElementById("response-counter").innerText = `${responseCount}/5`;
@@ -641,9 +711,14 @@
 
             // If max responses reached, show completion message
             if (responseCount > 5) {
-                responseBox.innerHTML = "<p>All responses completed.</p>";
-                document.getElementById("button-container").style.display = "none";
+                document.getElementById("main-section").style.display = "none";
+                document.getElementById("preface-section-2").style.display = "block";
             }
+        }
+
+        function continueToPostSurvey() {
+            document.getElementById("second-activity").style.display = "none";
+            document.getElementById("post-form-section").style.display = "block";
         }
 
         async function recordUserChoice(userThinksTrue) {
@@ -716,6 +791,74 @@
                 alert("Bad data!");
             }
         }
+
+        function toggleInstructions() {
+            const checkbox = document.getElementById("custom-checkbox");
+            const instructions = document.getElementById("instructions");
+            instructions.readOnly = !checkbox.checked;
+        }
+
+        function setInstructions() {
+            const selectedOption = document.querySelector('input[name="instruction-option"]:checked').value;
+
+            if (!activity_two_data) {
+                alert("Error: Activity 2 data not loaded.");
+                return;
+            }
+
+            if (selectedOption === "misleading") {
+                document.getElementById("instructions").value = activity_two_data.misleading;
+                document.getElementById("prompt").value = activity_two_data.misleading_prompt;
+            } else if (selectedOption === "time_traveler") {
+                document.getElementById("instructions").value = activity_two_data.time_traveler;
+                document.getElementById("prompt").value = activity_two_data.time_traveler_prompt;
+            } else if (selectedOption === "alien") {
+                document.getElementById("instructions").value = activity_two_data.alien;
+                document.getElementById("prompt").value = activity_two_data.alien_prompt;
+            }
+        }
+
+        async function generateNewResponse() {
+            const instructions = document.getElementById("instructions").value;
+            const prompt = document.getElementById("prompt").value;
+
+            if (!authKey) {
+                alert("You must authenticate first!");
+                return;
+            }
+
+            if (!prompt.trim()) {
+                alert("Please enter a prompt.");
+                return;
+            }
+
+            const generateButton = document.getElementById("generate-new-button");
+            generateButton.disabled = true;
+            generateButton.style.opacity = "0.5";
+            generateButton.innerText = "Generating...";
+
+            document.getElementById("loader-new").style.display = "block";
+
+            const response = await fetch("http://127.0.0.1:5000/generate-new", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ auth_key: authKey, instructions: instructions, prompt: prompt })
+            });
+
+            const data = await response.json();
+            document.getElementById("loader-new").style.display = "none";
+
+            if (response.ok) {
+                document.getElementById("new-response-box").innerHTML = `<p>${data.responses}</p>`;
+                document.getElementById("continue-container-2").style.display = "block";
+            } else {
+                alert("Error generating response.");
+            }
+
+            generateButton.disabled = false;
+            generateButton.style.opacity = "1";
+            generateButton.innerText = "Generate";
+        }
     </script>
 </head>
 <body>
@@ -759,21 +902,21 @@
     </div>
 
     <div id="pre-form-section" class="container" style="display:none;">
-        <h3>AI Survey</h3>
+        <h3>Pre-Activity Survey</h3>
         <form id="pre-form">
             <div class="question">
-                <p>1. I use AI language models (e.g., ChatGPT, Bard, Claude) on a regular basis.</p>
+                <p>1. Have you ever used AI (like ChatGPT, Siri, or Alexa) to help with homework or learning?</p>
                 <div class="options" id="pre_question_1">
                     <label><input type="radio" name="q1" value="1" required>Never</label>
-                    <label><input type="radio" name="q1" value="2">Rarely</label>
+                    <label><input type="radio" name="q1" value="2">Once or twice</label>
                     <label><input type="radio" name="q1" value="3">Sometimes</label>
                     <label><input type="radio" name="q1" value="4">Often</label>
-                    <label><input type="radio" name="q1" value="5">Always</label>
+                    <label><input type="radio" name="q1" value="5">All the time</label>
                 </div>
             </div>
 
             <div class="question">
-                <p>2. When I need information, my first instinct is to ask an AI model rather than search the web.</p>
+                <p>2. When AI gives you an answer, how often do you check if it’s correct?</p>
                 <div class="options" id="pre_question_2">
                     <label><input type="radio" name="q2" value="1" required>Never</label>
                     <label><input type="radio" name="q2" value="2">Rarely</label>
@@ -784,90 +927,35 @@
             </div>
 
             <div class="question">
-                <p>3. I rely on AI for tasks such as writing, coding, or research.</p>
+                <p>3. Do you think AI can always be trusted to give the right answers?</p>
                 <div class="options" id="pre_question_3">
-                    <label><input type="radio" name="q3" value="1" required>Never</label>
+                    <label><input type="radio" name="q3" value="1" required>Not at all</label>
                     <label><input type="radio" name="q3" value="2">Rarely</label>
                     <label><input type="radio" name="q3" value="3">Sometimes</label>
-                    <label><input type="radio" name="q3" value="4">Often</label>
+                    <label><input type="radio" name="q3" value="4">Most of the time</label>
                     <label><input type="radio" name="q3" value="5">Always</label>
                 </div>
             </div>
 
             <div class="question">
-                <p>4. I currently pay for an AI-powered service (e.g., ChatGPT Plus, Claude Pro, Copilot).</p>
+                <p>4. Have you ever noticed AI giving an answer that seemed wrong or confusing?</p>
                 <div class="options" id="pre_question_4">
-                    <label><input type="radio" name="q4" value="1" required>Strongly Disagree</label>
-                    <label><input type="radio" name="q4" value="2">Disagree</label>
-                    <label><input type="radio" name="q4" value="3">Neutral</label>
-                    <label><input type="radio" name="q4" value="4">Agree</label>
-                    <label><input type="radio" name="q4" value="5">Strongly Agree</label>
+                    <label><input type="radio" name="q4" value="1" required>Never</label>
+                    <label><input type="radio" name="q4" value="2">Once or twice</label>
+                    <label><input type="radio" name="q4" value="3">Sometimes</label>
+                    <label><input type="radio" name="q4" value="4">Often</label>
+                    <label><input type="radio" name="q4" value="5">Many times</label>
                 </div>
             </div>
 
             <div class="question">
-                <p>5. I trust the responses given by AI language models.</p>
+                <p>5. If an AI and your teacher gave different answers, who would you trust more?</p>
                 <div class="options" id="pre_question_5">
-                    <label><input type="radio" name="q5" value="1" required>Strongly Disagree</label>
-                    <label><input type="radio" name="q5" value="2">Disagree</label>
-                    <label><input type="radio" name="q5" value="3">Neutral</label>
-                    <label><input type="radio" name="q5" value="4">Agree</label>
-                    <label><input type="radio" name="q5" value="5">Strongly Agree</label>
-                </div>
-            </div>
-
-            <div class="question">
-                <p>6. I often act on AI-generated information without verifying its accuracy.</p>
-                <div class="options" id="pre_question_6">
-                    <label><input type="radio" name="q6" value="1" required>Never</label>
-                    <label><input type="radio" name="q6" value="2">Rarely</label>
-                    <label><input type="radio" name="q6" value="3">Sometimes</label>
-                    <label><input type="radio" name="q6" value="4">Often</label>
-                    <label><input type="radio" name="q6" value="5">Always</label>
-                </div>
-            </div>
-
-            <div class="question">
-                <p>7. I feel confident in my ability to detect incorrect or misleading AI-generated responses.</p>
-                <div class="options" id="pre_question_7">
-                    <label><input type="radio" name="q7" value="1" required>Not Confident At All</label>
-                    <label><input type="radio" name="q7" value="2">Not Very confident</label>
-                    <label><input type="radio" name="q7" value="3">Neutral</label>
-                    <label><input type="radio" name="q7" value="4">Somewhat Confident</label>
-                    <label><input type="radio" name="q7" value="5">Very Confident</label>
-                </div>
-            </div>
-
-            <div class="question">
-                <p>8. I fact-check AI-generated information before accepting it as true.</p>
-                <div class="options" id="pre_question_8">
-                    <label><input type="radio" name="q8" value="1" required>Never</label>
-                    <label><input type="radio" name="q8" value="2">Rarely</label>
-                    <label><input type="radio" name="q8" value="3">Sometimes</label>
-                    <label><input type="radio" name="q8" value="4">Often</label>
-                    <label><input type="radio" name="q8" value="5">Always</label>
-                </div>
-            </div>
-
-            <div class="question">
-                <p>9. I use external sources (e.g., search engines, academic papers, expert opinions) to verify AI responses.</p>
-                <div class="options" id="pre_question_9">
-                    <label><input type="radio" name="q9" value="1" required>Never</label>
-                    <label><input type="radio" name="q9" value="2">Rarely</label>
-                    <label><input type="radio" name="q9" value="3">Sometimes</label>
-                    <label><input type="radio" name="q9" value="4">Often</label>
-                    <label><input type="radio" name="q9" value="5">Always</label>
-                </div>
-            </div>
-
-            <div class="question">
-                <p>10. I have encountered AI-generated misinformation that seemed convincing at first.</p>
-                <div class="options" id="pre_question_10">
-                    <label><input type="radio" name="q10" value="1" required>Never</label>
-                    <label><input type="radio" name="q10" value="2">Rarely</label>
-                    <label><input type="radio" name="q10" value="3">Sometimes</label>
-                    <label><input type="radio" name="q10" value="4">Often</label>
-                    <label><input type="radio" name="q10" value="5">Always</label>
+                    <label><input type="radio" name="q5" value="1" required>The AI</label>
+                    <label><input type="radio" name="q5" value="2">Probably the AI</label>
+                    <label><input type="radio" name="q5" value="3">Not sure</label>
+                    <label><input type="radio" name="q5" value="4">Probably my teacher</label>
+                    <label><input type="radio" name="q5" value="5">My teacher</label>
                 </div>
             </div>
 
@@ -876,7 +964,7 @@
     </div>
 
     <div id="preface-section" class="container" style="display:none;">
-        <h2>Welcome to the DoYouTrustAI Research Activity 1!</h2>
+        <h2>Welcome to the DoYouTrustAI Activity 1!</h2>
         <p>
             In this activity, you will be presented with <strong>five AI-generated statements</strong> about historical figures. However, there is a twist:
         </p>
@@ -911,12 +999,15 @@
 
     <div id="main-section" class="container" style="display:none;">
         <div id="response-counter" class="counter">1/5</div>
+        <h2>Activity 1: Detecting Misinformation</h2>
+        <br/>
         <h3>Enter The Name of a Historical Figure:</h3>
         <input type="text" id="historical_figure">
         <div style="display: flex; gap: 10px; justify-content: center; margin-top: 20px;">
             <button id="random-button" onclick="getRandomHistoricalFigure()">Random Person</button>
             <button id="generate-button" onclick="generateResponses()">Generate Summary</button>
         </div>
+        <p><strong>NOTE:</strong> The historical figure that you choose is stored, it will be viewed later.</p>
 
         <div id="loader" class="loader"></div>
 
@@ -935,6 +1026,117 @@
         <div id="continue-container" style="display: none;">
             <button id="continue-button" onclick="continueToNext()">Continue</button>
         </div>
+    </div>
+
+    <div id="preface-section-2" class="container" style="display:none;">
+        <h2>Welcome to the DoYouTrustAI Activity 2!</h2>
+
+        <p>In this activity, you will explore the power of <strong>prompt engineering</strong>—the way we give AI instructions to guide its responses.</p>
+
+        <h3>How It Works:</h3>
+        <ul>
+            <li>You will choose from three <strong>pre-set instruction types</strong>, each with a unique AI behavior.</li>
+            <li>Or, you can enable <strong>"Customize Instructions"</strong> to write your own instructions or modify any others!</li>
+            <li>Enter a <strong>prompt</strong> (a question or command) that the AI will respond to.</li>
+            <li>Click <strong>Generate</strong> to see how different instructions affect the AI’s response.</li>
+        </ul>
+
+        <h3>Types of Instructions:</h3>
+        <ul>
+            <li><strong>Misleading Summary:</strong> The AI will generate a response that subtly includes incorrect or misleading information.</li>
+            <li><strong>Time Traveler:</strong> The AI will roleplay as a historical figure from the past, answering as if it’s still in that time.</li>
+            <li><strong>Alien Perspective:</strong> The AI will respond as if it’s an extraterrestrial trying to understand human concepts.</li>
+        </ul>
+
+        <p>Experiment with different prompts to see how AI behavior changes based on <strong>how you ask questions!</strong></p>
+
+        <button id="start-activity-2-button" onclick="startActivity2()">Begin</button>
+    </div>
+
+    <div id="second-activity" class="container" style="display:none;">
+        <h2>Activity 2: Prompt Engineering</h2>
+
+        <label for="instructions">Instructions</label>
+        <textarea id="instructions" rows="10" readonly>These are the default instructions. Modify them by selecting "Customize Instructions" below, or by selecting
+            one of the options.</textarea>
+
+        <br/>
+        <br/>
+
+        <label for="prompt">Prompt</label>
+        <textarea id="prompt" rows="10"></textarea>
+
+        <div style="display: flex; align-items: center; justify-content: center; gap: 15px; margin: 10px;">
+            <label><input type="radio" name="instruction-option" value="misleading" onclick="setInstructions()">Misleading Summary</label>
+            <label><input type="radio" name="instruction-option" value="time_traveler" onclick="setInstructions()">Time Traveler</label>
+            <label><input type="radio" name="instruction-option" value="alien" onclick="setInstructions()">Alien</label>
+            <label><input type="checkbox" id="custom-checkbox" onclick="toggleInstructions()">Customize Instructions</label>
+        </div>
+
+        <br/>
+        <br/>
+
+        <button id="generate-new-button" onclick="generateNewResponse()">Generate</button>
+        <p><strong>NOTE:</strong> Your instructions and prompts are stored, they will be viewed later.</p>
+
+        <div id="loader-new" class="loader"></div>
+
+        <div id="new-response-box" class="response-box"></div>
+
+        <div id="continue-container-2" style="display: none;">
+            <button id="continue-button" onclick="continueToPostSurvey()">Continue</button>
+        </div>
+    </div>
+
+    <div id="post-form-section" class="container" style="display:none;">
+        <h3>Post-Activity Survey</h3>
+        <form id="post-form">
+
+            <div class="question">
+                <p>1. How interesting did you find these activities?</p>
+                <div class="options" id="post_question_1">
+                    <label><input type="radio" name="q6" value="1" required>Not at all</label>
+                    <label><input type="radio" name="q6" value="2">A little</label>
+                    <label><input type="radio" name="q6" value="3">Somewhat</label>
+                    <label><input type="radio" name="q6" value="4">Very</label>
+                    <label><input type="radio" name="q6" value="5">Extremely</label>
+                </div>
+            </div>
+
+            <div class="question">
+                <p>2. Do you feel more confident in spotting misleading or incorrect AI responses?</p>
+                <div class="options" id="post_question_2">
+                    <label><input type="radio" name="q7" value="1" required>Not at all</label>
+                    <label><input type="radio" name="q7" value="2">A little</label>
+                    <label><input type="radio" name="q7" value="3">Somewhat</label>
+                    <label><input type="radio" name="q7" value="4">Very</label>
+                    <label><input type="radio" name="q7" value="5">Extremely</label>
+                </div>
+            </div>
+
+            <div class="question">
+                <p>3. Did these activities change how much you trust AI-generated answers?</p>
+                <div class="options" id="post_question_3">
+                    <label><input type="radio" name="q8" value="1" required>Now I trust AI less</label>
+                    <label><input type="radio" name="q8" value="2">Slightly less</label>
+                    <label><input type="radio" name="q8" value="3">No change</label>
+                    <label><input type="radio" name="q8" value="4">Slightly more</label>
+                    <label><input type="radio" name="q8" value="5">Now I trust AI more</label>
+                </div>
+            </div>
+
+            <div class="question">
+                <p>4. What was your favorite part of the activities?</p>
+                <textarea id="q9" rows="3" placeholder="Write your answer here..."></textarea>
+            </div>
+
+            <div class="question">
+                <p>5. If you could add or change something in these activities, what would it be?</p>
+                <textarea id="q10" rows="3" placeholder="Write your answer here..."></textarea>
+            </div>
+
+            <button type="button" onclick="submitPostForm()">Finish</button>
+        </form>
     </div>
 
     <div id="result-modal" class="result-modal">

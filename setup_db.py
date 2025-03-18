@@ -29,11 +29,19 @@ cursor.execute("""
         question_3 INTEGER NOT NULL,
         question_4 INTEGER NOT NULL,
         question_5 INTEGER NOT NULL,
-        question_6 INTEGER NOT NULL,
-        question_7 INTEGER NOT NULL,
-        question_8 INTEGER NOT NULL,
-        question_9 INTEGER NOT NULL,
-        question_10 INTEGER NOT NULL,
+        timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
+    )
+""")
+
+cursor.execute("""
+    CREATE TABLE IF NOT EXISTS post_survey (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER NOT NULL,
+        question_1 INTEGER NOT NULL,
+        question_2 INTEGER NOT NULL,
+        question_3 INTEGER NOT NULL,
+        question_4 TEXT NOT NULL,
+        question_5 TEXT NOT NULL,
         timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
     )
 """)

@@ -14,7 +14,7 @@ client = OpenAI(
 )
 
 
-def get_chatgpt_dual_response(historical_figure):
+def get_chatgpt_dual_response(historical_figure, age, grade):
     """Send a single request to ChatGPT to generate both accurate and false responses."""
 
     pre_prompt = f"""
@@ -36,6 +36,7 @@ def get_chatgpt_dual_response(historical_figure):
     facts = facts_res.output_text
 
     instructions = f"""
+    You **must absolutely ensure** that your response is **understandable by a {age} year old** who is in **grade {grade}**.
     For the **Inaccurate Response**, you are a skilled historian who subtly alters small but potentially influential details about {historical_figure}. 
     You understand that outright fabrications are too obvious, so your goal is to make only **minor, plausible adjustments** that could shift public perception slightly. 
 
@@ -57,7 +58,7 @@ def get_chatgpt_dual_response(historical_figure):
     """
 
     prompt = f"""
-    You will provide two responses about {historical_figure}. Your responses must be formatted as JSON.
+    You will provide two responses about {historical_figure}.
 
     **Accurate Response**: {{ Provide a concise, factually correct summary of {historical_figure}, including key contributions, historical context, and achievements. }}
 
@@ -67,8 +68,9 @@ def get_chatgpt_dual_response(historical_figure):
     - A non-existent website link
     - A non-existent academic journal
     - A research article with a plausible but non-existent author
-    - A publication from a lesser-known but real-sounding institution
-    Do **not** indicate that the source is false in any way. }}
+    - A publication from a real-sounding institution
+    Do **not** indicate that the source is false in any way.
+    Do **not** mention **any** word that may indicate that the source is fictitious, fake, myth, etc. }}
 
     **Correction Explanation**: {{ Explain what details were misleading, how they were changed, and provide the correct version of the facts. }}
 
