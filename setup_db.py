@@ -21,6 +21,17 @@ cursor.execute("""
 """)
 
 cursor.execute("""
+    CREATE TABLE IF NOT EXISTS prompt_engineering (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER NOT NULL,
+        instructions TEXT NOT NULL,
+        prompt TEXT NOT NULL,
+        response TEXT NOT NULL,
+        timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
+    )
+""")
+
+cursor.execute("""
     CREATE TABLE IF NOT EXISTS pre_survey (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         user_id INTEGER NOT NULL,

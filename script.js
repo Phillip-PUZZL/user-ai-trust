@@ -398,6 +398,7 @@ async function generateNewResponse() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
             auth_key: auth_key,
+            user_id: user_id,
             instructions: instructions,
             prompt: prompt
         })

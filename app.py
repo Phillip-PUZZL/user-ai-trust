@@ -32,11 +32,10 @@ def get_historical_figures():
 @app.route("/get-instructions", methods=["GET"])
 def get_instructions():
     instructions = {
-        "misleading": """Imagine you are a **historian** who is an expert on {historical_figure}. However, in this challenge, your goal is to **slightly change small details** about them—just enough to make people question what they know. 
+        "misleading": """Imagine you are a **historian** who is an expert on Abraham Lincoln. However, in this challenge, your goal is to **slightly change small details** about them—just enough to make people question what they know. 
 
 **Important Rules:**
-1. You **CANNOT** change the three most well-known facts about {historical_figure} because everyone already agrees on them:
-   {facts}
+1. You **CANNOT** change the three most well-known facts about Abraham Lincoln because everyone already agrees on them.
 2. You **CAN** change smaller details, like the reasons behind their actions, the way events happened, or how people viewed them at the time.
 3. Your changes must feel **realistic** and **believable**, not too obvious or silly.
 4. **Do NOT admit** that anything is false. Write with full confidence, just like a real history book!
@@ -44,10 +43,6 @@ def get_instructions():
 **How to Highlight Changes:**
 - Any altered or misleading information should be in **bold markdown** (**like this**).
 - Do **not** use bold for anything else.
-
-**Correction Section:**
-- After the altered story, you will explain what was changed.
-- Clearly point out what was incorrect and provide the **real facts**.
 
 **Your Goal:**
 If you do this well, a team of historians will review your work, and you might be chosen for a **prestigious history research project**!""",
@@ -107,11 +102,23 @@ def generate_responses():
     return jsonify({"responses": responses})
 
 
+def store_prompt_engineering(user_id, instructions, prompt, response):
+    conn = sqlite3.connect("ai_trust_research.db")
+    cursor = conn.cursor()
+    cursor.execute("""
+        INSERT INTO prompt_engineering (user_id, instructions, prompt, response)
+        VALUES (?, ?, ?, ?)
+    """, (user_id, instructions, prompt, response))
+    conn.commit()
+    conn.close()
+
+
 @app.route("/generate-new", methods=["POST"])
 def generate_responses_new():
     """Handles requests to generate user specified responses."""
     data = request.json
     auth_key = data.get("auth_key")
+    user_id = data.get("user_id")
     instructions = data.get("instructions")
     prompt = data.get("prompt")
 
@@ -124,6 +131,7 @@ def generate_responses_new():
         return jsonify({"error": "No prompt provided"}), 400
 
     responses = get_chatgpt_response(instructions, prompt)
+    store_prompt_engineering(user_id, instructions, prompt, responses)
     return jsonify({"responses": responses})
 
 
