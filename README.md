@@ -2,7 +2,7 @@ The ***DoYouTrustAI*** Research Tool
 
 Simply create a .env file in the root directory with the following keys:<br>
 APP_SECRET_KEY=YOUR_APP_SECRET_KEY<br>
-OPENAI_API_KEY=YOUR_OPENAI_API_KEY
+OPENAI_API_KEY=YOUR_OPENAI_API_KEY<br>
 ACCESS_PASSCODE=PASSCODE_TO_ENTER_TOOL
 
 Then install all dependencies.<br>
