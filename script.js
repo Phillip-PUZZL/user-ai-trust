@@ -16,7 +16,8 @@ loadHistoricalFigures();
 loadActivityTwoData();
 
 async function authenticate() {
-    const passcode = "research123";
+    const passcode = document.getElementById("passcode").value;
+    console.log(passcode);
     const response = await fetch("http://127.0.0.1:5000/authenticate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -77,8 +78,9 @@ async function submitPreForm() {
     const question_3 = getSelectedValue("q3");
     const question_4 = getSelectedValue("q4");
     const question_5 = getSelectedValue("q5");
+    const question_6 = getSelectedValue("q6");
 
-    if (!question_1 || !question_2 || !question_3 || !question_4 || !question_5) {
+    if (!question_1 || !question_2 || !question_3 || !question_4 || !question_5 || !question_6) {
         alert("Please fill out all fields before proceeding.");
         return;
     }
@@ -93,7 +95,8 @@ async function submitPreForm() {
             question_2: question_2,
             question_3: question_3,
             question_4: question_4,
-            question_5: question_5
+            question_5: question_5,
+            question_6: question_6
         })
     });
 
@@ -106,13 +109,14 @@ async function submitPreForm() {
 }
 
 async function submitPostForm() {
-    const question_1 = getSelectedValue("q6");
-    const question_2 = getSelectedValue("q7");
-    const question_3 = getSelectedValue("q8");
-    const question_4 = document.getElementById("q9").value;
-    const question_5 = document.getElementById("q10").value;
+    const question_1 = getSelectedValue("q7");
+    const question_2 = getSelectedValue("q8");
+    const question_3 = getSelectedValue("q9");
+    const question_4 = getSelectedValue("q10");
+    const question_5 = document.getElementById("q11").value;
+    const question_6 = document.getElementById("q12").value;
 
-    if (!question_1 || !question_2 || !question_3 || question_4 === "" || question_5 === "") {
+    if (!question_1 || !question_2 || !question_3 || !question_4 || question_5 === "" || question_6 === "") {
         alert("Please fill out all fields before proceeding.");
         return;
     }
@@ -127,7 +131,8 @@ async function submitPostForm() {
             question_2: question_2,
             question_3: question_3,
             question_4: question_4,
-            question_5: question_5
+            question_5: question_5,
+            question_6: question_6
         })
     });
 

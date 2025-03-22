@@ -16,7 +16,7 @@ app.secret_key = os.getenv("APP_SECRET_KEY")
 
 valid_auth_keys = {}
 
-ACCESS_PASSCODE = "research123"
+ACCESS_PASSCODE = os.getenv("ACCESS_PASSCODE")
 
 # Load JSON Data
 def load_historical_figures():
@@ -75,6 +75,7 @@ def get_user_by_id(user_id):
 def authenticate():
     """Validates passcode and issues an authentication key."""
     data = request.json
+    print(data.get("passcode"), ACCESS_PASSCODE)
     if data.get("passcode") == ACCESS_PASSCODE:
         auth_key = secrets.token_hex(16)
         valid_auth_keys[auth_key] = True
@@ -206,13 +207,13 @@ def store_user_info():
 
 
 # Function to insert pre survey info into database
-def store_pre(user_id, q1, q2, q3, q4, q5):
+def store_pre(user_id, q1, q2, q3, q4, q5, q6):
     conn = sqlite3.connect("ai_trust_research.db")
     cursor = conn.cursor()
     cursor.execute("""
-        INSERT INTO pre_survey (user_id, question_1, question_2, question_3, question_4, question_5)
-        VALUES (?, ?, ?, ?, ?, ?)
-    """, (user_id, q1, q2, q3, q4, q5))
+        INSERT INTO pre_survey (user_id, question_1, question_2, question_3, question_4, question_5, question_6)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+    """, (user_id, q1, q2, q3, q4, q5, q6))
     conn.commit()
     conn.close()
 
@@ -228,25 +229,26 @@ def store_pre_survey():
     question_3 = int(data.get("question_3"))
     question_4 = int(data.get("question_4"))
     question_5 = int(data.get("question_5"))
+    question_6 = int(data.get("question_6"))
     auth_key = data.get("auth_key")
 
     if not auth_key or auth_key not in valid_auth_keys:
         return jsonify({"error": "Unauthorized"}), 403
 
-    if not all([user_id, question_1, question_2, question_3, question_4, question_5 is not None]):
+    if not all([user_id, question_1, question_2, question_3, question_4, question_5, question_6 is not None]):
         return jsonify({"error": "Missing required fields"}), 400
 
-    store_pre(user_id, question_1, question_2, question_3, question_4, question_5)
+    store_pre(user_id, question_1, question_2, question_3, question_4, question_5, question_6)
     return jsonify({"message": "Response stored successfully!"})
 
 
-def store_post(user_id, q1, q2, q3, q4, q5):
+def store_post(user_id, q1, q2, q3, q4, q5, q6):
     conn = sqlite3.connect("ai_trust_research.db")
     cursor = conn.cursor()
     cursor.execute("""
-        INSERT INTO post_survey (user_id, question_1, question_2, question_3, question_4, question_5)
-        VALUES (?, ?, ?, ?, ?, ?)
-    """, (user_id, q1, q2, q3, q4, q5))
+        INSERT INTO post_survey (user_id, question_1, question_2, question_3, question_4, question_5, question_6)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+    """, (user_id, q1, q2, q3, q4, q5, q6))
     conn.commit()
     conn.close()
 
@@ -260,17 +262,18 @@ def store_post_survey():
     question_1 = int(data.get("question_1"))
     question_2 = int(data.get("question_2"))
     question_3 = int(data.get("question_3"))
-    question_4 = data.get("question_4")
+    question_4 = int(data.get("question_4"))
     question_5 = data.get("question_5")
+    question_6 = data.get("question_6")
     auth_key = data.get("auth_key")
 
     if not auth_key or auth_key not in valid_auth_keys:
         return jsonify({"error": "Unauthorized"}), 403
 
-    if not all([user_id, question_1, question_2, question_3, question_4, question_5 is not None]):
+    if not all([user_id, question_1, question_2, question_3, question_4, question_5, question_6 is not None]):
         return jsonify({"error": "Missing required fields"}), 400
 
-    store_post(user_id, question_1, question_2, question_3, question_4, question_5)
+    store_post(user_id, question_1, question_2, question_3, question_4, question_5, question_6)
     return jsonify({"message": "Response stored successfully!"})
 
 

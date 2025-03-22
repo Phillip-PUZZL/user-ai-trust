@@ -50,7 +50,7 @@
     <h3>Pre-Activity Survey</h3>
     <form id="pre-form">
         <div class="question">
-            <p>1. Have you ever used AI (like ChatGPT, Siri, or Alexa) to help with homework or learning?</p>
+            <p>1. Have you ever used generative conversational AI, like ChatGPT, to help with homework or learning?</p>
             <div class="options" id="pre_question_1">
                 <label><input type="radio" name="q1" value="1" required>Never</label>
                 <label><input type="radio" name="q1" value="2">Once or twice</label>
@@ -101,6 +101,17 @@
                 <label><input type="radio" name="q5" value="3">Not sure</label>
                 <label><input type="radio" name="q5" value="4">Probably my teacher</label>
                 <label><input type="radio" name="q5" value="5">My teacher</label>
+            </div>
+        </div>
+
+        <div class="question">
+            <p>6. Do you think that AI inaccuracies could cause issues or confusion in the education of students?</p>
+            <div class="options" id="pre_question_5">
+                <label><input type="radio" name="q6" value="1" required>Never</label>
+                <label><input type="radio" name="q6" value="2">Rarely</label>
+                <label><input type="radio" name="q6" value="3">Sometimes</label>
+                <label><input type="radio" name="q6" value="4">Often</label>
+                <label><input type="radio" name="q6" value="5">Always</label>
             </div>
         </div>
 
@@ -236,17 +247,6 @@
         <div class="question">
             <p>1. How interesting did you find these activities?</p>
             <div class="options" id="post_question_1">
-                <label><input type="radio" name="q6" value="1" required>Not at all</label>
-                <label><input type="radio" name="q6" value="2">A little</label>
-                <label><input type="radio" name="q6" value="3">Somewhat</label>
-                <label><input type="radio" name="q6" value="4">Very</label>
-                <label><input type="radio" name="q6" value="5">Extremely</label>
-            </div>
-        </div>
-
-        <div class="question">
-            <p>2. Do you feel more confident in spotting misleading or incorrect AI responses?</p>
-            <div class="options" id="post_question_2">
                 <label><input type="radio" name="q7" value="1" required>Not at all</label>
                 <label><input type="radio" name="q7" value="2">A little</label>
                 <label><input type="radio" name="q7" value="3">Somewhat</label>
@@ -256,24 +256,46 @@
         </div>
 
         <div class="question">
+            <p>2. Do you feel more confident in spotting misleading or incorrect AI responses?</p>
+            <div class="options" id="post_question_2">
+                <label><input type="radio" name="q8" value="1" required>Not at all</label>
+                <label><input type="radio" name="q8" value="2">A little</label>
+                <label><input type="radio" name="q8" value="3">Somewhat</label>
+                <label><input type="radio" name="q8" value="4">Very</label>
+                <label><input type="radio" name="q8" value="5">Extremely</label>
+            </div>
+        </div>
+
+        <div class="question">
             <p>3. Did these activities change how much you trust AI-generated answers?</p>
             <div class="options" id="post_question_3">
-                <label><input type="radio" name="q8" value="1" required>Now I trust AI less</label>
-                <label><input type="radio" name="q8" value="2">Slightly less</label>
-                <label><input type="radio" name="q8" value="3">No change</label>
-                <label><input type="radio" name="q8" value="4">Slightly more</label>
-                <label><input type="radio" name="q8" value="5">Now I trust AI more</label>
+                <label><input type="radio" name="q9" value="1" required>Now I trust AI less</label>
+                <label><input type="radio" name="q9" value="2">Slightly less</label>
+                <label><input type="radio" name="q9" value="3">No change</label>
+                <label><input type="radio" name="q9" value="4">Slightly more</label>
+                <label><input type="radio" name="q9" value="5">Now I trust AI more</label>
+            </div>
+        </div>
+
+        <div class="question">
+            <p>4. Do you think that AI inaccuracies could cause issues or confusion in the education of students?</p>
+            <div class="options" id="pre_question_5">
+                <label><input type="radio" name="q10" value="1" required>Never</label>
+                <label><input type="radio" name="q10" value="2">Rarely</label>
+                <label><input type="radio" name="q10" value="3">Sometimes</label>
+                <label><input type="radio" name="q10" value="4">Often</label>
+                <label><input type="radio" name="q10" value="5">Always</label>
             </div>
         </div>
 
         <div class="question">
             <p>4. What was your favorite part of the activities?</p>
-            <textarea id="q9" rows="3" placeholder="Write your answer here..."></textarea>
+            <textarea id="q11" rows="3" placeholder="Write your answer here..."></textarea>
         </div>
 
         <div class="question">
             <p>5. If you could add or change something in these activities, what would it be?</p>
-            <textarea id="q10" rows="3" placeholder="Write your answer here..."></textarea>
+            <textarea id="q12" rows="3" placeholder="Write your answer here..."></textarea>
         </div>
 
         <button type="button" onclick="submitPostForm()">Finish</button>
