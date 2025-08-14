@@ -3,7 +3,7 @@ import json
 import secrets
 from datetime import datetime
 
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 from flask_cors import CORS
 from dotenv import load_dotenv
 
@@ -32,6 +32,10 @@ pool = ConnectionPool(
     max_size=int(os.getenv("DB_POOL_MAX", "5")),
     kwargs={"autocommit": True},
 )
+
+@app.route("/")
+def index():
+    return render_template("index.html")
 
 # Load JSON Data
 def load_historical_figures():
