@@ -1,0 +1,6 @@
+Flask
+flask-cors
+python-dotenv
+openai
+psycopg[binary]>=3.2
+psycopg_pool>=3.2

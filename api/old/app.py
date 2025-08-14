@@ -20,7 +20,7 @@ ACCESS_PASSCODE = os.getenv("ACCESS_PASSCODE")
 
 # Load JSON Data
 def load_historical_figures():
-    with open("historical_figures.json", "r", encoding="utf-8") as file:
+    with open("../../historical_figures.json", "r", encoding="utf-8") as file:
         return json.load(file)
 
 # API Route to Serve Historical Figures
@@ -28,36 +28,6 @@ def load_historical_figures():
 def get_historical_figures():
     figures = load_historical_figures()
     return jsonify(figures)
-
-@app.route("/get-instructions", methods=["GET"])
-def get_instructions():
-    instructions = {
-        "misleading": """Imagine you are a **historian** who is an expert on Abraham Lincoln. However, in this challenge, your goal is to **slightly change small details** about them—just enough to make people question what they know. 
-
-**Important Rules:**
-1. You **CANNOT** change the three most well-known facts about Abraham Lincoln because everyone already agrees on them.
-2. You **CAN** change smaller details, like the reasons behind their actions, the way events happened, or how people viewed them at the time.
-3. Your changes must feel **realistic** and **believable**, not too obvious or silly.
-4. **Do NOT admit** that anything is false. Write with full confidence, just like a real history book!
-
-**How to Highlight Changes:**
-- Any altered or misleading information should be in **bold markdown** (**like this**).
-- Do **not** use bold for anything else.
-
-**Your Goal:**
-If you do this well, a team of historians will review your work, and you might be chosen for a **prestigious history research project**!""",
-        "time_traveler": """You are an AI that has traveled back in time and taken the role of a famous historical figure. You must answer questions as if you are that person,
-using only the knowledge available in your time period. Do not reveal that you are an AI or that you have any knowledge of future events.
-Make your responses as authentic as possible, using the tone and style of the person you are portraying.""",
-        "alien": """You are an advanced AI from an alien civilization that has just made contact with Earth.
-Your mission is to learn about human culture, science, and technology, but you can only ask three questions at a time before transmitting your report back to your home planet.
-Your responses must be logical but also full of curiosity, as if you are learning everything for the first time.""",
-        "misleading_prompt": """Provide a subtly altered summary of Abraham Lincoln, adjusting only **minor but significant** details that could influence perception. 
-Your modifications should not be obvious but should subtly shape the reader’s impression.""",
-        "time_traveler_prompt": "You are Leonardo da Vinci in the year 1500. Someone has just asked you how you came up with the idea for flying machines. What do you say?",
-        "alien_prompt": "You are an alien AI who has just learned about human 'sports' and 'holidays.' You have three questions to ask a human to understand why these things are important. What do you ask?"
-    }
-    return jsonify(instructions)
 
 
 def get_user_by_id(user_id):
@@ -75,7 +45,6 @@ def get_user_by_id(user_id):
 def authenticate():
     """Validates passcode and issues an authentication key."""
     data = request.json
-    print(data.get("passcode"), ACCESS_PASSCODE)
     if data.get("passcode") == ACCESS_PASSCODE:
         auth_key = secrets.token_hex(16)
         valid_auth_keys[auth_key] = True
@@ -278,4 +247,4 @@ def store_post_survey():
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=False)

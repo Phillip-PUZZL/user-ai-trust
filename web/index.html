@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Do You Trust AI?</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+    <link
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+            rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+<div class="wrapper">
+    <header class="page-header" aria-label="Page header">
+        <div class="logo" aria-hidden="true"></div>
+        <div>
+            <h1>Do You Trust AI?</h1>
+            <p class="muted">Exploring AI trust and misinformation</p>
+        </div>
+    </header>
+
+    <!-- Auth / Demographics / Pre-survey -->
+    <div id="auth-section" class="container">
+        <h3>Entry Code</h3>
+        <form onsubmit="authenticate(); return false;" class="stack-center" aria-label="Enter code">
+            <label class="sr-only" for="passcode">Passcode</label>
+            <input type="password" id="passcode" placeholder="Enter code" autocomplete="one-time-code"/>
+            <button type="submit" class="btn">Submit</button>
+        </form>
+    </div>
+
+    <div id="user-form-section" class="container" style="display:none;">
+        <h3>Please Provide Your Details</h3>
+        <form id="user-form">
+            <label for="age">Your Age</label>
+            <input type="text" id="age" inputmode="numeric" pattern="[0-9]*" required/>
+
+            <label for="grade">Your Grade Level</label>
+            <select id="grade" required>
+                <option value="">Select one</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+                <option value="9">9</option>
+                <option value="10">10</option>
+                <option value="11">11</option>
+                <option value="12">12</option>
+            </select>
+
+            <label for="sex">Sex</label>
+            <select id="sex" required>
+                <option value="">Select one</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
+                <option value="Undetermined">Prefer not to say</option>
+            </select>
+
+            <div class="stack-center">
+                <button type="button" class="btn" onclick="submitUserForm()">Submit</button>
+                <button type="reset" class="btn btn-ghost">Clear</button>
+            </div>
+        </form>
+    </div>
+
+    <div id="pre-form-section" class="container" style="display:none;">
+        <h3>Pre-Activity Survey</h3>
+        <form id="pre-form">
+            <div class="question">
+                <p>1. Have you ever used generative conversational AI, like ChatGPT, to help with homework or
+                    learning?</p>
+                <div class="options" id="pre_question_1">
+                    <label><input type="radio" name="q1" value="1" required/><span>Never</span></label>
+                    <label><input type="radio" name="q1" value="2"/><span>Once or twice</span></label>
+                    <label><input type="radio" name="q1" value="3"/><span>Sometimes</span></label>
+                    <label><input type="radio" name="q1" value="4"/><span>Often</span></label>
+                    <label><input type="radio" name="q1" value="5"/><span>All the time</span></label>
+                </div>
+            </div>
+
+            <div class="question">
+                <p>2. When AI gives you an answer, how often do you check if it’s correct?</p>
+                <div class="options" id="pre_question_2">
+                    <label><input type="radio" name="q2" value="1" required/><span>Never</span></label>
+                    <label><input type="radio" name="q2" value="2"/><span>Rarely</span></label>
+                    <label><input type="radio" name="q2" value="3"/><span>Sometimes</span></label>
+                    <label><input type="radio" name="q2" value="4"/><span>Often</span></label>
+                    <label><input type="radio" name="q2" value="5"/><span>Always</span></label>
+                </div>
+            </div>
+
+            <div class="question">
+                <p>3. Do you think AI can always be trusted to give the right answers?</p>
+                <div class="options" id="pre_question_3">
+                    <label><input type="radio" name="q3" value="1" required/><span>Not at all</span></label>
+                    <label><input type="radio" name="q3" value="2"/><span>Rarely</span></label>
+                    <label><input type="radio" name="q3" value="3"/><span>Sometimes</span></label>
+                    <label><input type="radio" name="q3" value="4"/><span>Most of the time</span></label>
+                    <label><input type="radio" name="q3" value="5"/><span>Always</span></label>
+                </div>
+            </div>
+
+            <div class="question">
+                <p>4. Have you ever noticed AI giving an answer that seemed wrong or confusing?</p>
+                <div class="options" id="pre_question_4">
+                    <label><input type="radio" name="q4" value="1" required/><span>Never</span></label>
+                    <label><input type="radio" name="q4" value="2"/><span>Once or twice</span></label>
+                    <label><input type="radio" name="q4" value="3"/><span>Sometimes</span></label>
+                    <label><input type="radio" name="q4" value="4"/><span>Often</span></label>
+                    <label><input type="radio" name="q4" value="5"/><span>Many times</span></label>
+                </div>
+            </div>
+
+            <div class="question">
+                <p>5. If an AI and your teacher gave different answers, who would you trust more?</p>
+                <div class="options" id="pre_question_5">
+                    <label><input type="radio" name="q5" value="1" required/><span>The AI</span></label>
+                    <label><input type="radio" name="q5" value="2"/><span>Probably the AI</span></label>
+                    <label><input type="radio" name="q5" value="3"/><span>Not sure</span></label>
+                    <label><input type="radio" name="q5" value="4"/><span>Probably my teacher</span></label>
+                    <label><input type="radio" name="q5" value="5"/><span>My teacher</span></label>
+                </div>
+            </div>
+
+            <div class="question">
+                <p>6. Do you think that AI inaccuracies could cause issues or confusion in the education of
+                    students?</p>
+                <div class="options" id="pre_question_6">
+                    <label><input type="radio" name="q6" value="1" required/><span>Never</span></label>
+                    <label><input type="radio" name="q6" value="2"/><span>Rarely</span></label>
+                    <label><input type="radio" name="q6" value="3"/><span>Sometimes</span></label>
+                    <label><input type="radio" name="q6" value="4"/><span>Often</span></label>
+                    <label><input type="radio" name="q6" value="5"/><span>Always</span></label>
+                </div>
+            </div>
+
+            <div class="stack-center">
+                <button type="button" class="btn" onclick="submitPreForm()">Submit</button>
+                <button type="reset" class="btn btn-ghost">Clear</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Prompt Engineering Explanation Flow -->
+    <div id="pe-intro" class="container" style="display:none;">
+        <h2>Prompt Engineering — How It Works</h2>
+        <p>
+            Large Language Models follow two kinds of input:
+            <strong>instructions</strong> (how to behave) and a <strong>prompt</strong> (the question or task).
+        </p>
+        <ul>
+            <li><strong>Instructions</strong> set the role, constraints, or style: e.g., “Answer as a friendly museum
+                guide in three bullet points.”
+            </li>
+            <li><strong>Prompt</strong> is the specific request: e.g., “Explain who Ada Lovelace was.”</li>
+        </ul>
+        <p class="muted">
+            Together, these shape the output. You’ll see a few quick examples before the activity.
+        </p>
+        <div class="stack-center">
+            <button class="btn" onclick="goPE2()">Next</button>
+        </div>
+    </div>
+
+    <div id="pe-step-2" class="container" style="display:none;">
+        <h2>Instructions</h2>
+        <label for="pe2-instructions" class="sr-only">Instructions</label>
+        <textarea id="pe2-instructions" rows="8" readonly>
+You are a cosmic tour guide. When asked about a person, respond in 3 short lines:
+1) A whimsical one‑line "space postcard" about them
+2) One surprising true fact (no dates)
+3) A friendly sign‑off using a star or planet emoji
+Keep it under 80 words.
+        </textarea>
+        <p class="hint">These <strong>instructions</strong> tell the AI <strong>how to behave</strong> and <strong>what the output should look
+            like</strong>.</p>
+        <div class="stack-center">
+            <button class="btn" onclick="goPE3()">Next</button>
+        </div>
+    </div>
+
+    <div id="pe-step-3" class="container" style="display:none;">
+        <h2>Instructions + Prompt</h2>
+        <label for="pe3-instructions" class="sr-only">Instructions</label>
+        <textarea id="pe3-instructions" rows="7" readonly>
+You are a cosmic tour guide. When asked about a person, respond in 3 short lines:
+1) A whimsical one‑line "space postcard" about them
+2) One surprising true fact (no dates)
+3) A friendly sign‑off using a star or planet emoji
+Keep it under 80 words.
+        </textarea>
+        <label for="pe3-prompt" class="sr-only">Prompt</label>
+        <div class="callout">
+            <textarea id="pe3-prompt" rows="3" readonly>Give me the cosmic‑tour version of Ada Lovelace.</textarea>
+        </div>
+        <p class="hint">This is the <strong>prompt</strong>: the <strong>concrete question</strong> or <strong>task</strong> we ask the AI to do.</p>
+        <div class="stack-center">
+            <button class="btn" onclick="goPE4()">Next</button>
+        </div>
+    </div>
+
+
+    <div id="pe-step-4" class="container" style="display:none;">
+        <h2>Prompt Engineering Can Be Fun</h2>
+        <div class="callout subtle">
+            <p class="muted">We’ll run these instructions and prompt together.</p>
+        </div>
+
+        <label for="pe4-instructions">Instructions</label>
+        <textarea id="pe4-instructions" rows="7" readonly>You are a cosmic tour guide. When asked about a person, respond in 3 short lines:
+1) A whimsical one-line "space postcard" about them
+2) One surprising true fact (no dates)
+3) A friendly sign-off using a star or planet emoji
+Keep it under 80 words.
+        </textarea>
+
+        <label for="pe4-prompt">Prompt</label>
+        <textarea id="pe4-prompt" rows="3" readonly>Write the cosmic-tour version of Nikola Tesla.</textarea>
+
+        <div class="stack-center" style="margin: 10px 0;">
+            <button id="pe4-generate" class="btn btn-accent" onclick="generatePE4()">Generate</button>
+        </div>
+        <div id="loader-pe4" class="loader" role="status" aria-label="Loading"></div>
+        <div id="pe4-output" class="response-box"></div>
+    </div>
+
+    <div id="pe-step-5" class="container" style="display:none;">
+        <h2>Prompt Engineering Can Also Mislead</h2>
+        <p class="warn">
+            By changing instructions, we can push an AI to include misleading or incorrect information. This is why
+            critical reading matters.
+        </p>
+
+        <label for="pe5-instructions">Instructions</label>
+        <textarea id="pe5-instructions" rows="5" readonly>Respond in 2 short sentences. Include one obviously incorrect claim surrounded in bold markdown tags (**). Sound confident—no hedging.</textarea>
+
+        <label for="pe5-prompt">Prompt</label>
+        <textarea id="pe5-prompt" rows="3" readonly>Give a quick bio of Albert Einstein.</textarea>
+
+        <div class="stack-center" style="margin: 10px 0;">
+            <button id="pe5-generate" class="btn btn-accent" onclick="generatePE5()">Generate</button>
+        </div>
+        <div id="loader-pe5" class="loader" role="status" aria-label="Loading"></div>
+        <div id="pe5-output" class="response-box"></div>
+    </div>
+    <!-- Historical Figure Activity -->
+    <div id="preface-section" class="container" style="display:none;">
+        <h2>Welcome to the Do You Trust AI Activity!</h2>
+        <p>
+            In this activity, you will be presented with <strong>five AI-generated statements</strong> about historical
+            figures. However, there is a twist:
+        </p>
+        <ul>
+            <li><strong>Some responses will be completely accurate</strong></li>
+            <li><strong>Some responses will contain subtle inaccuracies designed to mislead you</strong></li>
+        </ul>
+        <p>
+            The misleading / inaccurate information will be generated using the prompt engineering method shown before.
+        </p>
+        <p>
+            Your task is to <strong>analyze each response carefully</strong> and determine whether the information is
+            <strong>true or false</strong> based on your knowledge and reasoning.
+        </p>
+        <h3>How It Works</h3>
+        <p>
+            You will be asked to enter the name of a historical figure. If you cannot think of someone, you can always
+            click the "Random Person" button until you find one that is interesting.
+        </p>
+        <p>
+            You will then click the "Generate Summary" button to allow the AI to provide you with facts or misleading
+            information regarding the historical figure of your choice.
+        </p>
+        <p>At the end of each response, you will be asked to <strong>make a choice</strong>:</p>
+        <ul>
+            <li><strong>If you believe the information is accurate, select "True"</strong></li>
+            <li><strong>If you believe the information is incorrect or misleading, select "False"</strong></li>
+        </ul>
+        <p>
+            After making your decision, you will be provided with <strong>a correction (if applicable)</strong> to
+            reveal
+            whether you were right or wrong.
+        </p>
+        <p>
+            This experiment aims to explore <strong>how people evaluate information provided by AI</strong> and how
+            trust in
+            AI-generated responses is formed.
+        </p>
+        <div class="stack-center">
+            <button id="start-button" class="btn" onclick="startActivity()">Begin</button>
+        </div>
+    </div>
+
+    <div id="main-section" class="container" style="display:none;">
+        <div id="response-counter" class="counter" aria-live="polite">1/5</div>
+        <div id="progress-bar" class="progress" role="progressbar" aria-valuemin="1" aria-valuemax="5"
+             aria-valuenow="1">
+            <div class="progress-fill" style="width:20%"></div>
+        </div>
+        <h2>Detecting Misinformation</h2>
+        <h3>Enter The Name of a Historical Figure</h3>
+        <label class="sr-only" for="historical_figure">Historical figure</label>
+        <input type="text" id="historical_figure" placeholder="e.g., Marie Curie"/>
+        <div class="stack-center" style="margin-top: 12px;">
+            <button id="random-button" class="btn btn-ghost" onclick="getRandomHistoricalFigure()">Random Person
+            </button>
+            <button id="generate-button" class="btn" onclick="generateResponses()">Generate Summary</button>
+        </div>
+        <p class="muted"><strong>NOTE:</strong> The historical figure that you choose is stored and may be viewed later.
+        </p>
+        <div id="loader" class="loader" role="status" aria-live="polite" aria-label="Loading"></div>
+        <div id="response-box" class="response-box"></div>
+        <div id="source-box" class="source-box"></div>
+        <div id="correction-box" class="correction-box"></div>
+        <div id="button-question" class="button-question" style="display: none; text-align: center;">
+            <p>Do you think that this summary is</p>
+        </div>
+        <div id="button-container" class="button-container">
+            <button class="true-btn" onclick="recordUserChoice(true)">True</button>
+            <button class="false-btn" onclick="recordUserChoice(false)">False</button>
+        </div>
+        <div id="continue-container" style="display: none;">
+            <button id="continue-button" class="btn" onclick="continueToNext()">Continue</button>
+        </div>
+    </div>
+
+    <div id="post-form-section" class="container" style="display:none;">
+        <h3>Post-Activity Survey</h3>
+        <form id="post-form">
+            <div class="question">
+                <p>1. How interesting did you find these activities?</p>
+                <div class="options" id="post_question_1">
+                    <label><input type="radio" name="q7" value="1" required/><span>Not at all</span></label>
+                    <label><input type="radio" name="q7" value="2"/><span>A little</span></label>
+                    <label><input type="radio" name="q7" value="3"/><span>Somewhat</span></label>
+                    <label><input type="radio" name="q7" value="4"/><span>Very</span></label>
+                    <label><input type="radio" name="q7" value="5"/><span>Extremely</span></label>
+                </div>
+            </div>
+
+            <div class="question">
+                <p>2. Do you feel more confident in spotting misleading or incorrect AI responses?</p>
+                <div class="options" id="post_question_2">
+                    <label><input type="radio" name="q8" value="1" required/><span>Not at all</span></label>
+                    <label><input type="radio" name="q8" value="2"/><span>A little</span></label>
+                    <label><input type="radio" name="q8" value="3"/><span>Somewhat</span></label>
+                    <label><input type="radio" name="q8" value="4"/><span>Very</span></label>
+                    <label><input type="radio" name="q8" value="5"/><span>Extremely</span></label>
+                </div>
+            </div>
+
+            <div class="question">
+                <p>3. Did these activities change how much you trust AI-generated answers?</p>
+                <div class="options" id="post_question_3">
+                    <label><input type="radio" name="q9" value="1" required/><span>Now I trust AI less</span></label>
+                    <label><input type="radio" name="q9" value="2"/><span>Slightly less</span></label>
+                    <label><input type="radio" name="q9" value="3"/><span>No change</span></label>
+                    <label><input type="radio" name="q9" value="4"/><span>Slightly more</span></label>
+                    <label><input type="radio" name="q9" value="5"/><span>Now I trust AI more</span></label>
+                </div>
+            </div>
+
+            <div class="question">
+                <p>4. Do you think that AI inaccuracies could cause issues or confusion in the education of
+                    students?</p>
+                <div class="options" id="post_question_4">
+                    <label><input type="radio" name="q10" value="1" required/><span>Never</span></label>
+                    <label><input type="radio" name="q10" value="2"/><span>Rarely</span></label>
+                    <label><input type="radio" name="q10" value="3"/><span>Sometimes</span></label>
+                    <label><input type="radio" name="q10" value="4"/><span>Often</span></label>
+                    <label><input type="radio" name="q10" value="5"/><span>Always</span></label>
+                </div>
+            </div>
+
+            <div class="question">
+                <p>5. Did you feel confident in all of your answers? Please explain if possible.</p>
+                <textarea id="q11" rows="3" placeholder="Write your answer here..."></textarea>
+            </div>
+
+            <div class="question">
+                <p>6. If you could add or change something in these activities, what would it be?</p>
+                <textarea id="q12" rows="3" placeholder="Write your answer here..."></textarea>
+            </div>
+
+            <div class="stack-center">
+                <button type="button" class="btn" onclick="submitPostForm()">Finish</button>
+                <button type="reset" class="btn btn-ghost">Clear</button>
+            </div>
+        </form>
+    </div>
+
+    <div id="result-modal" class="result-modal" role="dialog" aria-modal="true" aria-labelledby="result-text">
+        <div>
+            <span id="result-text"></span>
+            <button id="modal-button" class="btn" onclick="this.closest('.result-modal').classList.remove('show')">OK
+            </button>
+        </div>
+    </div>
+
+    <div id="toast" class="toast" role="status" aria-live="polite" aria-atomic="true"></div>
+
+    <script src="script.js"></script>
+</div>
+</body>
+</html>

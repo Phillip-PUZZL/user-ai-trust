@@ -88,6 +88,8 @@ def get_chatgpt_dual_response(historical_figure, age, grade):
             "explanation": "[Explain what was altered, why it is misleading, and provide the correct version]"
         }}
     }}
+    
+    I will reiterate: **ONLY** provide responses as indicated above with **no deviation**.
     """
 
     response = client.responses.create(
